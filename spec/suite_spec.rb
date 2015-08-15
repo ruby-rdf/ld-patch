@@ -10,28 +10,35 @@ describe LD::Patch do
   after(:all) {WebMock.allow_net_connect!(net_http_connect_on_start: false)}
 
   %w(manifest.ttl manifest-syntax.ttl turtle/manifest-ldpatch.ttl).each do |variant|
-    #next unless variant == 'turtle/manifest-ldpatch.ttl'
     manifest = Fixtures::SuiteTest::BASE + variant
 
     Fixtures::SuiteTest::Manifest.open(manifest) do |m|
       describe m.comment do
         m.entries.each do |t|
           next if t.approval =~ /Rejected/
-          specify "#{t.id.split("/").last}: #{t.name} - #{t.comment}" do
+          specify "#{t.id.split("/").last}: #{t.name} - #{t.comment}#{'( negative)' if t.negative_test?}" do
+            if %w(turtle-syntax-bad-struct-09 turtle-syntax-bad-struct-10).include?(t.name)
+              pending "Multiple '.' allowed in this grammar"
+            end
             t.debug = []
             begin
-              LD::Patch.parse(t.input,
+              ast = LD::Patch.parse(t.input,
                 base_uri: t.base,
                 debug:    t.debug
-              ) do |parser|
-                if positive_test?
-                  if evaluate?
-                    pending "positive evaluation tests"
-                  end
+              )
+              if t.positive_test?
+                if t.evaluate?
+                  pending "positive evaluation tests"
+                  fail
                 else
-                  if evaluate?
-                    pending "negative evaluation tests"
-                  end
+                  expect(ast).to be_a(Array)
+                end
+              else
+                if t.evaluate?
+                  pending "negative evaluation tests"
+                  fail
+                else
+                  fail("Should have raised a parser error")
                 end
               end
             rescue LD::Patch::Error

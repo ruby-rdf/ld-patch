@@ -280,8 +280,8 @@ describe LD::Patch::Parser do
           } .
         ),
         result: %(
-          ((add ((triple <http://a.example/s> <http://a.example/p> _:b0)
-                 (triple _:b0 <http://a.example/p2> <http://a.example/o2>))))
+          ((add ((triple _:b0 <http://a.example/p2> <http://a.example/o2>)
+                 (triple <http://a.example/s> <http://a.example/p> _:b0))))
         )
       },
     }.each do |name, params|

@@ -85,7 +85,7 @@ module LD::Patch
                  |@prefix
                  |true|false
                  |\^\^|\.\.
-                 |[@\(\),.;\[\]\{\}\=!^\/aABCD]
+                 |[\(\),.;\[\]\{\}\=!^\/aABCD]
               )x.freeze
   end
 end

@@ -72,9 +72,14 @@ module LD::Patch
     end
     terminal(:PNAME_NS,             PNAME_NS) do |prod, token, input|
       prefix = token.value[0..-2]
-      # [68] PrefixedName ::= PNAME_LN | PNAME_NS
-      input[:iri] = ns(prefix, nil)
-      input[:prefix] = prefix && prefix.to_sym
+
+      # Two contexts, one when prefix is being defined, the other when being used
+      case prod
+      when :prefixID
+        input[:prefix] = prefix
+      else
+        input[:iri] = ns(prefix, nil)
+      end
     end
     terminal(:STRING_LITERAL_LONG_SINGLE_QUOTE, STRING_LITERAL_LONG_SINGLE_QUOTE, unescape: true) do |prod, token, input|
       input[:string] = token.value[3..-4]
@@ -235,7 +240,7 @@ module LD::Patch
 
     # [12t*] object ::= iri | BlankNode | collection | blankNodePropertyList | literal | VAR1
     production(:object) do |input, current, callback|
-      if current[:collection]
+      if list = current[:collection]
         # Add collection patterns
         list.each_statement do |statement|
           (input[:triples] ||= []) << RDF::Query::Pattern.from(statement)
@@ -243,6 +248,9 @@ module LD::Patch
 
         current[:resource] = current[:collection].subject
       end
+
+      # Add triples from blankNodePropertyList
+      (input[:triples] ||= []).concat(current[:triples]) if current[:triples]
 
       if input[:object_list]
         # Part of an rdf:List collection
@@ -256,11 +264,12 @@ module LD::Patch
 
     # [14t] blankNodePropertyList ::= "[" predicateObjectList "]"
     start_production(:blankNodePropertyList) do |input, current, callback|
-      current[:bnpl_subject] = self.bnode
+      current[:subject] = self.bnode
     end
     
     production(:blankNodePropertyList) do |input, current, callback|
-      input[:resource] = current[:bnpl_subject]
+      input[:resource] = current[:subject]
+      (input[:triples] ||= []).concat(current[:triples]) if current[:triples]
     end
 
     # [15t] collection ::= "(" object* ")"
@@ -307,7 +316,6 @@ module LD::Patch
     # @yieldparam  [LD::Patch::Parser] parser
     # @return [LD::Patch::Parser] The parser instance, or result returned from block
     def initialize(input = nil, options = {}, &block)
-      $stderr.puts input
       @input = case input
       when IO, StringIO then input.read
       else input.to_s.dup
@@ -556,6 +564,7 @@ module LD::Patch
     end
 
     def ns(prefix, suffix)
+      error("pname", "undefined prefix #{prefix.inspect}") unless prefix(prefix)
       base = prefix(prefix).to_s
       suffix = suffix.to_s.sub(/^\#/, "") if base.index("#")
       debug {"ns(#{prefix.inspect}): base: '#{base}', suffix: '#{suffix}'"}
