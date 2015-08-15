@@ -20,9 +20,6 @@ module LD::Patch
     # 159s
     ECHAR                = /\\[tbnrf\\"']/.freeze
 
-    # 17
-    INDEX                = /\-?[0-9]+/.freeze
-
     # 18
     IRIREF               = /<(?:#{IRI_RANGE}|#{UCHAR})*>/.freeze
     # 144s
@@ -30,11 +27,11 @@ module LD::Patch
     # 154s
     EXPONENT             = /[eE][+-]?[0-9]+/
     # 19
-    INTEGER              = /[0-9]+/.freeze
+    INTEGER              = /[+-]?[0-9]+/.freeze
     # 20
-    DECIMAL              = /(?:[0-9]*\.[0-9]+)/.freeze
+    DECIMAL              = /[+-]?(?:[0-9]*\.[0-9]+)/.freeze
     # 21
-    DOUBLE               = /(?:[0-9]+\.[0-9]*#{EXPONENT}|\.?[0-9]+#{EXPONENT})/.freeze
+    DOUBLE               = /[+-]?(?:[0-9]+\.[0-9]*#{EXPONENT}|\.?[0-9]+#{EXPONENT})/.freeze
     # 22
     STRING_LITERAL_QUOTE      = /"([^\"\\\n\r]|#{ECHAR}|#{UCHAR})*"/.freeze
     # 23

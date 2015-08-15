@@ -148,7 +148,7 @@
       <td>
         "<code class="grammar-literal">^</code>" <a href="#grammar-production-iri">iri</a>
         <code>|</code> <a href="#grammar-production-iri">iri</a>
-        <code>|</code> <a href="#grammar-production-INDEX">INDEX</a>
+        <code>|</code> <a href="#grammar-production-INTEGER">INTEGER</a>
       </td>
     </tr>
     <tr id='grammar-production-constraint'>
@@ -165,18 +165,9 @@
       <td><code>slice</code></td>
       <td>::=</td>
       <td>
-        <a href="#grammar-production-INDEX">INDEX</a><code>?</code> 
+        <a href="#grammar-production-INTEGER">INTEGER</a><code>?</code> 
         "<code class="grammar-literal">..</code>"
-        <a href="#grammar-production-INDEX">INDEX</a><code>?</code>
-      </td>
-    </tr>
-    <tr id='grammar-production-INDEX'>
-      <td>[17]</td>
-      <td><code>INDEX</code></td>
-      <td>::=</td>
-      <td>
-        "<code class="grammar-literal">-</code>"<code>?</code> 
-        (<code>[</code> <code class="grammar-literal">0-9</code><code>]</code> )<code>+</code>
+        <a href="#grammar-production-INTEGER">INTEGER</a><code>?</code>
       </td>
     </tr>
     <tr id='grammar-production-VAR1'>

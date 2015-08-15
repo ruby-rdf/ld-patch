@@ -238,7 +238,7 @@ describe LD::Patch::Parser do
     end
   end
 
-  describe "@prefix" do
+  describe "Syntax" do
     {
       "spec_example_24_positive" => {
         input: %(
@@ -262,6 +262,27 @@ describe LD::Patch::Parser do
             )
           )
         ))
+      },
+      "bnode-fresh.ldpatch" => {
+        input: %(
+          Add {
+            <http://example.org/s2> <http://example.org/p2> _:genid1
+          } .
+        ),
+        result: %(
+          ((add ((triple <http://example.org/s2> <http://example.org/p2> _:genid1))))
+        )
+      },
+      "blankNodePropertyList_as_object.ldpatch" => {
+        input: %(
+          Add {
+            <http://a.example/s> <http://a.example/p> [ <http://a.example/p2> <http://a.example/o2> ] .
+          } .
+        ),
+        result: %(
+          ((add ((triple <http://a.example/s> <http://a.example/p> _:b0)
+                 (triple _:b0 <http://a.example/p2> <http://a.example/o2>))))
+        )
       },
     }.each do |name, params|
       it name do

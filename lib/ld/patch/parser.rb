@@ -37,9 +37,6 @@ module LD::Patch
     attr_accessor :result
 
     # Terminals passed to lexer. Order matters!
-    terminal(:INDEX,              INDEX) do |prod, token, input|
-      input[:index] = literal(token.value, datatype: RDF::XSD.integer)
-    end
     terminal(:ANON,                 ANON) do |prod, token, input|
       input[:resource] = bnode
     end
@@ -178,7 +175,7 @@ module LD::Patch
     # ( '/' step | constraint )
     production(:_path_1) do |input, current, callback|
       step = case
-      when current[:index]    then Algebra::Index.new(current[:index])
+      when current[:literal]    then Algebra::Index.new(current[:literal])
       when current[:constraint] then current[:constraint]
       when current[:reverse]    then Algebra::Reverse.new(current[:iri])
       else                           current[:iri]
@@ -199,10 +196,10 @@ module LD::Patch
 
     # [16] slice ::= INDEX? '..' INDEX?
     production(:_slice_1) do |input, current, callback|
-      input[:slice1] = current[:index]
+      input[:slice1] = current[:literal]
     end
     production(:_slice_2) do |input, current, callback|
-      input[:slice2] = current[:index]
+      input[:slice2] = current[:literal]
     end
 
     # [4t] prefixID defines a prefix mapping
@@ -310,6 +307,7 @@ module LD::Patch
     # @yieldparam  [LD::Patch::Parser] parser
     # @return [LD::Patch::Parser] The parser instance, or result returned from block
     def initialize(input = nil, options = {}, &block)
+      $stderr.puts input
       @input = case input
       when IO, StringIO then input.read
       else input.to_s.dup

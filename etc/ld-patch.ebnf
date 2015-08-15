@@ -11,10 +11,10 @@
 [11]    varOrIRI        ::=     iri | VAR1
 [12]    value           ::=     iri | literal | VAR1
 [13]    path            ::=     ( '/' step | constraint )*
-[14]    step            ::=     '^' iri | iri | INDEX
+[14]    step            ::=     '^' iri | iri | INTEGER
 [15]    constraint      ::=     '[' path ( '=' value )? ']' | '!'
-[16]    slice           ::=     INDEX? '..' INDEX?
-[17]    INDEX           ::=     '-'? [0-9]+
+[16]    slice           ::=     INTEGER? '..' INTEGER?
+# [17]    INDEX           ::=     '-'? [0-9]+ # Don't use INDEX above, as it is confused with INTEGER when parsing
 [143s]  VAR1            ::=     '?' VARNAME
 [166s]  VARNAME         ::=     ( PN_CHARS_U | [0-9] ) ( PN_CHARS_U | [0-9] | #x00B7 | [#x0300-#x036F] | [#x203F-#x2040] )*
 [4t]    prefixID        ::=     "@prefix" PNAME_NS IRIREF "."

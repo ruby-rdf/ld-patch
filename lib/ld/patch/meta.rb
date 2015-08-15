@@ -415,15 +415,15 @@ module LD::Patch::Meta
     },
     :slice => {
       ".." => [:_slice_1, "..", :_slice_2],
-      :INDEX => [:_slice_1, "..", :_slice_2],
+      :INTEGER => [:_slice_1, "..", :_slice_2],
     },
     :_slice_1 => {
       ".." => [],
-      :INDEX => [:INDEX],
+      :INTEGER => [:INTEGER],
     },
     :_slice_2 => {
       "(" => [],
-      :INDEX => [:INDEX],
+      :INTEGER => [:INTEGER],
     },
     :statement => {
       "A" => [:add],
@@ -442,7 +442,7 @@ module LD::Patch::Meta
       "UpdateList" => [:updateList],
     },
     :step => {
-      :INDEX => [:INDEX],
+      :INTEGER => [:INTEGER],
       :IRIREF => [:iri],
       :PNAME_LN => [:iri],
       :PNAME_NS => [:iri],
@@ -553,7 +553,6 @@ module LD::Patch::Meta
     :DOUBLE,
     "Delete",
     "DeleteExisting",
-    :INDEX,
     :INTEGER,
     :IRIREF,
     :LANGTAG,
@@ -1078,7 +1077,7 @@ module LD::Patch::Meta
       "!",
       "["],
     :_path_5 => [
-      :INDEX,
+      :INTEGER,
       "^",
       :IRIREF,
       :PNAME_LN,
@@ -1170,18 +1169,18 @@ module LD::Patch::Meta
       :_eps,
       "@prefix"],
     :slice => [
-      :INDEX,
+      :INTEGER,
       ".."],
     :_slice_1 => [
-      :INDEX,
+      :INTEGER,
       :_eps],
     :_slice_2 => [
-      :INDEX,
+      :INTEGER,
       :_eps],
     :_slice_3 => [
       ".."],
     :_slice_4 => [
-      :INDEX,
+      :INTEGER,
       :_eps],
     :statement => [
       "Bind",
@@ -1199,7 +1198,7 @@ module LD::Patch::Meta
       "UpdateList",
       "UL"],
     :step => [
-      :INDEX,
+      :INTEGER,
       "^",
       :IRIREF,
       :PNAME_LN,
@@ -1266,7 +1265,7 @@ module LD::Patch::Meta
       :PNAME_LN,
       :PNAME_NS],
     :_updateList_4 => [
-      :INDEX,
+      :INTEGER,
       ".."],
     :_updateList_5 => [
       "("],
@@ -1379,7 +1378,7 @@ module LD::Patch::Meta
       :IRIREF,
       "]",
       ".",
-      :INDEX,
+      :INTEGER,
       :BLANK_NODE_LABEL,
       :ANON,
       "(",
@@ -1390,7 +1389,6 @@ module LD::Patch::Meta
       :PNAME_NS,
       "=",
       "..",
-      :INTEGER,
       :DECIMAL,
       :DOUBLE,
       "true",
@@ -2162,7 +2160,7 @@ module LD::Patch::Meta
       :IRIREF,
       "]",
       ".",
-      :INDEX,
+      :INTEGER,
       :BLANK_NODE_LABEL,
       :ANON,
       "(",
@@ -2173,7 +2171,6 @@ module LD::Patch::Meta
       :PNAME_NS,
       "=",
       "..",
-      :INTEGER,
       :DECIMAL,
       :DOUBLE,
       "true",
@@ -2318,7 +2315,7 @@ module LD::Patch::Meta
       "["],
     :predicate => [
       :VAR1,
-      :INDEX,
+      :INTEGER,
       ".",
       :IRIREF,
       :BLANK_NODE_LABEL,
@@ -2330,7 +2327,6 @@ module LD::Patch::Meta
       "]",
       :PNAME_LN,
       :PNAME_NS,
-      :INTEGER,
       :DECIMAL,
       :DOUBLE,
       "true",

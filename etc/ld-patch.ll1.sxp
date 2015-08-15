@@ -107,35 +107,35 @@
   (follow "A" "AN" "Add" "AddNew" "B" "Bind" "C" "Cut" "D" "DE" "Delete"
    "DeleteExisting" "UL" "UpdateList" _eof )
   (seq "}" "."))
- (rule _triples_3 "6t.3"
-  (first IRIREF PNAME_LN PNAME_NS _eps "a")
-  (follow "." "}")
-  (alt _empty predicateObjectList))
- (rule _triples_5 "6t.5"
-  (first IRIREF PNAME_LN PNAME_NS _eps "a")
-  (follow "." "}")
-  (seq _triples_3))
- (rule _triples_2 "6t.2"
-  (first "[")
-  (follow "." "}")
-  (seq blankNodePropertyList _triples_3))
  (rule _triples_4 "6t.4"
   (first IRIREF PNAME_LN PNAME_NS "a")
   (follow "." "}")
   (seq predicateObjectList))
+ (rule _triples_5 "6t.5"
+  (first IRIREF PNAME_LN PNAME_NS _eps "a")
+  (follow "." "}")
+  (seq _triples_3))
+ (rule _triples_3 "6t.3"
+  (first IRIREF PNAME_LN PNAME_NS _eps "a")
+  (follow "." "}")
+  (alt _empty predicateObjectList))
+ (rule triples "6t"
+  (first "(" ANON BLANK_NODE_LABEL IRIREF PNAME_LN PNAME_NS VAR1 "[")
+  (follow "." "}")
+  (alt _triples_1 _triples_2))
  (rule addNew "6"
   (first "AN" "AddNew")
   (follow "A" "AN" "Add" "AddNew" "B" "Bind" "C" "Cut" "D" "DE" "Delete"
    "DeleteExisting" "UL" "UpdateList" _eof )
   (seq _addNew_1 "{" graph "}" "."))
+ (rule _triples_2 "6t.2"
+  (first "[")
+  (follow "." "}")
+  (seq blankNodePropertyList _triples_3))
  (rule _triples_1 "6t.1"
   (first "(" ANON BLANK_NODE_LABEL IRIREF PNAME_LN PNAME_NS VAR1)
   (follow "." "}")
   (seq subject predicateObjectList))
- (rule triples "6t"
-  (first "(" ANON BLANK_NODE_LABEL IRIREF PNAME_LN PNAME_NS VAR1 "[")
-  (follow "." "}")
-  (alt _triples_1 _triples_2))
  (rule _addNew_1 "6.1" (first "AN" "AddNew") (follow "{") (alt "AddNew" "AN"))
  (rule _addNew_2 "6.2"
   (first "{")
@@ -152,19 +152,23 @@
   (follow "A" "AN" "Add" "AddNew" "B" "Bind" "C" "Cut" "D" "DE" "Delete"
    "DeleteExisting" "UL" "UpdateList" _eof )
   (seq "}" "."))
- (rule predicateObjectList "7t"
-  (first IRIREF PNAME_LN PNAME_NS "a")
+ (rule _predicateObjectList_1 "7t.1"
+  (first ";" _eps)
   (follow "." "]" "}")
-  (seq verb objectList _predicateObjectList_1))
+  (alt _empty _predicateObjectList_3))
  (rule delete "7"
   (first "D" "Delete")
   (follow "A" "AN" "Add" "AddNew" "B" "Bind" "C" "Cut" "D" "DE" "Delete"
    "DeleteExisting" "UL" "UpdateList" _eof )
   (seq _delete_1 "{" graph "}" "."))
- (rule _predicateObjectList_1 "7t.1"
-  (first ";" _eps)
+ (rule _predicateObjectList_3 "7t.3"
+  (first ";")
   (follow "." "]" "}")
-  (alt _empty _predicateObjectList_3))
+  (seq _predicateObjectList_2 _predicateObjectList_1))
+ (rule _predicateObjectList_5 "7t.5"
+  (first IRIREF PNAME_LN PNAME_NS "a")
+  (follow "." ";" "]" "}")
+  (seq verb objectList))
  (rule _predicateObjectList_4 "7t.4"
   (first IRIREF PNAME_LN PNAME_NS _eps "a")
   (follow "." ";" "]" "}")
@@ -175,10 +179,6 @@
    STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "false" "true" )
   (follow "." ";" "]" "}")
   (seq objectList))
- (rule _predicateObjectList_2 "7t.2"
-  (first ";")
-  (follow "." ";" "]" "}")
-  (seq ";" _predicateObjectList_4))
  (rule _predicateObjectList_8 "7t.8"
   (first IRIREF PNAME_LN PNAME_NS _eps "a")
   (follow "." ";" "]" "}")
@@ -193,14 +193,14 @@
    STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "false" "true" )
   (follow "." "]" "}")
   (seq objectList _predicateObjectList_1))
- (rule _predicateObjectList_3 "7t.3"
+ (rule _predicateObjectList_2 "7t.2"
   (first ";")
-  (follow "." "]" "}")
-  (seq _predicateObjectList_2 _predicateObjectList_1))
- (rule _predicateObjectList_5 "7t.5"
-  (first IRIREF PNAME_LN PNAME_NS "a")
   (follow "." ";" "]" "}")
-  (seq verb objectList))
+  (seq ";" _predicateObjectList_4))
+ (rule predicateObjectList "7t"
+  (first IRIREF PNAME_LN PNAME_NS "a")
+  (follow "." "]" "}")
+  (seq verb objectList _predicateObjectList_1))
  (rule _delete_1 "7.1" (first "D" "Delete") (follow "{") (alt "Delete" "D"))
  (rule _delete_2 "7.2"
   (first "{")
@@ -217,12 +217,10 @@
   (follow "A" "AN" "Add" "AddNew" "B" "Bind" "C" "Cut" "D" "DE" "Delete"
    "DeleteExisting" "UL" "UpdateList" _eof )
   (seq "}" "."))
- (rule objectList "8t"
-  (first "(" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER IRIREF PNAME_LN
-   PNAME_NS STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
-   STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "false" "true" )
+ (rule _objectList_1 "8t.1"
+  (first "," _eps)
   (follow "." ";" "]" "}")
-  (seq object _objectList_1))
+  (alt _empty _objectList_3))
  (rule _objectList_5 "8t.5"
   (first "," _eps)
   (follow "." ";" "]" "}")
@@ -232,15 +230,17 @@
   (follow "A" "AN" "Add" "AddNew" "B" "Bind" "C" "Cut" "D" "DE" "Delete"
    "DeleteExisting" "UL" "UpdateList" _eof )
   (seq _deleteExisting_1 "{" graph "}" "."))
- (rule _objectList_1 "8t.1"
-  (first "," _eps)
-  (follow "." ";" "]" "}")
-  (alt _empty _objectList_3))
- (rule _objectList_2 "8t.2" (first ",") (follow "," "." ";" "]" "}") (seq "," object))
  (rule _objectList_3 "8t.3"
   (first ",")
   (follow "." ";" "]" "}")
   (seq _objectList_2 _objectList_1))
+ (rule _objectList_2 "8t.2" (first ",") (follow "," "." ";" "]" "}") (seq "," object))
+ (rule objectList "8t"
+  (first "(" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER IRIREF PNAME_LN
+   PNAME_NS STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
+   STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "false" "true" )
+  (follow "." ";" "]" "}")
+  (seq object _objectList_1))
  (rule _objectList_4 "8t.4"
   (first "," _eps)
   (follow "." ";" "]" "}")
@@ -292,15 +292,15 @@
   (follow "@prefix" "A" "AN" "Add" "AddNew" "B" "Bind" "C" "Cut" "D" "DE"
    "Delete" "DeleteExisting" "UL" "UpdateList" _eof )
   (seq "."))
- (rule subject "10t"
-  (first "(" ANON BLANK_NODE_LABEL IRIREF PNAME_LN PNAME_NS VAR1)
-  (follow IRIREF PNAME_LN PNAME_NS "a")
-  (alt iri BlankNode collection VAR1))
  (rule updateList "10"
   (first "UL" "UpdateList")
   (follow "A" "AN" "Add" "AddNew" "B" "Bind" "C" "Cut" "D" "DE" "Delete"
    "DeleteExisting" "UL" "UpdateList" _eof )
   (seq _updateList_1 varOrIRI predicate slice collection "."))
+ (rule subject "10t"
+  (first "(" ANON BLANK_NODE_LABEL IRIREF PNAME_LN PNAME_NS VAR1)
+  (follow IRIREF PNAME_LN PNAME_NS "a")
+  (alt iri BlankNode collection VAR1))
  (rule _updateList_1 "10.1"
   (first "UL" "UpdateList")
   (follow IRIREF PNAME_LN PNAME_NS VAR1)
@@ -316,7 +316,7 @@
    "DeleteExisting" "UL" "UpdateList" _eof )
   (seq predicate slice collection "."))
  (rule _updateList_4 "10.4"
-  (first ".." INDEX)
+  (first ".." INTEGER)
   (follow "A" "AN" "Add" "AddNew" "B" "Bind" "C" "Cut" "D" "DE" "Delete"
    "DeleteExisting" "UL" "UpdateList" _eof )
   (seq slice collection "."))
@@ -325,17 +325,23 @@
   (follow "A" "AN" "Add" "AddNew" "B" "Bind" "C" "Cut" "D" "DE" "Delete"
    "DeleteExisting" "UL" "UpdateList" _eof )
   (seq collection "."))
+ (rule predicate "11t"
+  (first IRIREF PNAME_LN PNAME_NS)
+  (follow "!" "(" ")" "," "." ".." "/" ";" "=" ANON BLANK_NODE_LABEL DECIMAL
+   DOUBLE INTEGER IRIREF PNAME_LN PNAME_NS STRING_LITERAL_LONG_QUOTE
+   STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
+   STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "false" "true" "}" )
+  (seq iri))
  (rule varOrIRI "11"
   (first IRIREF PNAME_LN PNAME_NS VAR1)
   (follow IRIREF PNAME_LN PNAME_NS)
   (alt iri VAR1))
- (rule predicate "11t"
-  (first IRIREF PNAME_LN PNAME_NS)
-  (follow "!" "(" ")" "," "." ".." "/" ";" "=" ANON BLANK_NODE_LABEL DECIMAL
-   DOUBLE INDEX INTEGER IRIREF PNAME_LN PNAME_NS STRING_LITERAL_LONG_QUOTE
-   STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
-   STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "false" "true" "}" )
-  (seq iri))
+ (rule value "12"
+  (first DECIMAL DOUBLE INTEGER IRIREF PNAME_LN PNAME_NS
+   STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
+   STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE VAR1 "false" "true" )
+  (follow "!" "." "/" "[" "]")
+  (alt iri literal VAR1))
  (rule object "12t"
   (first "(" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER IRIREF PNAME_LN
    PNAME_NS STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
@@ -345,13 +351,6 @@
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "false" "true" "}" )
   (alt iri BlankNode collection blankNodePropertyList literal VAR1))
- (rule value "12"
-  (first DECIMAL DOUBLE INTEGER IRIREF PNAME_LN PNAME_NS
-   STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
-   STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE VAR1 "false" "true" )
-  (follow "!" "." "/" "[" "]")
-  (alt iri literal VAR1))
- (rule path "13" (first "!" "/" "[" _eps) (follow "." "=" "]") (alt _empty _path_2))
  (rule literal "13t"
   (first DECIMAL DOUBLE INTEGER STRING_LITERAL_LONG_QUOTE
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
@@ -361,6 +360,7 @@
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "false" "true" "}" )
   (alt RDFLiteral NumericLiteral BooleanLiteral))
+ (rule path "13" (first "!" "/" "[" _eps) (follow "." "=" "]") (alt _empty _path_2))
  (rule _path_1 "13.1"
   (first "!" "/" "[")
   (follow "!" "." "/" "=" "[" "]")
@@ -369,20 +369,9 @@
  (rule _path_3 "13.3" (first "/") (follow "!" "." "/" "=" "[" "]") (seq "/" step))
  (rule _path_4 "13.4" (first "!" "/" "[" _eps) (follow "." "=" "]") (seq path))
  (rule _path_5 "13.5"
-  (first INDEX IRIREF PNAME_LN PNAME_NS "^")
+  (first INTEGER IRIREF PNAME_LN PNAME_NS "^")
   (follow "!" "." "/" "=" "[" "]")
   (seq step))
- (rule step "14"
-  (first INDEX IRIREF PNAME_LN PNAME_NS "^")
-  (follow "!" "." "/" "=" "[" "]")
-  (alt _step_1 iri INDEX))
- (rule _blankNodePropertyList_1 "14t.1"
-  (first IRIREF PNAME_LN PNAME_NS "a")
-  (follow "(" ")" "," "." ";" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER
-   IRIREF PNAME_LN PNAME_NS STRING_LITERAL_LONG_QUOTE
-   STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
-   STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "a" "false" "true" "}" )
-  (seq predicateObjectList "]"))
  (rule blankNodePropertyList "14t"
   (first "[")
   (follow "(" ")" "," "." ";" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER
@@ -397,14 +386,18 @@
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "a" "false" "true" "}" )
   (seq "]"))
+ (rule step "14"
+  (first INTEGER IRIREF PNAME_LN PNAME_NS "^")
+  (follow "!" "." "/" "=" "[" "]")
+  (alt _step_1 iri INTEGER))
+ (rule _blankNodePropertyList_1 "14t.1"
+  (first IRIREF PNAME_LN PNAME_NS "a")
+  (follow "(" ")" "," "." ";" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER
+   IRIREF PNAME_LN PNAME_NS STRING_LITERAL_LONG_QUOTE
+   STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
+   STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "a" "false" "true" "}" )
+  (seq predicateObjectList "]"))
  (rule _step_1 "14.1" (first "^") (follow "!" "." "/" "=" "[" "]") (seq "^" iri))
- (rule _collection_4 "15t.4"
-  (first "(" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER IRIREF PNAME_LN
-   PNAME_NS STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
-   STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE VAR1 "[" _eps "false"
-   "true" )
-  (follow ")")
-  (seq _collection_1))
  (rule _collection_5 "15t.5"
   (first ")")
   (follow "(" ")" "," "." ";" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER
@@ -412,6 +405,13 @@
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "a" "false" "true" "}" )
   (seq ")"))
+ (rule _collection_1 "15t.1"
+  (first "(" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER IRIREF PNAME_LN
+   PNAME_NS STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
+   STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE VAR1 "[" _eps "false"
+   "true" )
+  (follow ")")
+  (alt _empty _collection_2))
  (rule collection "15t"
   (first "(")
   (follow "(" ")" "," "." ";" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER
@@ -419,12 +419,6 @@
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "a" "false" "true" "}" )
   (seq "(" _collection_1 ")"))
- (rule _collection_2 "15t.2"
-  (first "(" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER IRIREF PNAME_LN
-   PNAME_NS STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
-   STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "false" "true" )
-  (follow ")")
-  (seq object _collection_1))
  (rule _collection_3 "15t.3"
   (first "(" ")" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER IRIREF PNAME_LN
    PNAME_NS STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
@@ -434,17 +428,23 @@
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "a" "false" "true" "}" )
   (seq _collection_1 ")"))
- (rule _collection_1 "15t.1"
+ (rule constraint "15"
+  (first "!" "[")
+  (follow "!" "." "/" "=" "[" "]")
+  (alt _constraint_1 "!"))
+ (rule _collection_2 "15t.2"
+  (first "(" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER IRIREF PNAME_LN
+   PNAME_NS STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
+   STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "false" "true" )
+  (follow ")")
+  (seq object _collection_1))
+ (rule _collection_4 "15t.4"
   (first "(" ANON BLANK_NODE_LABEL DECIMAL DOUBLE INTEGER IRIREF PNAME_LN
    PNAME_NS STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
    STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE VAR1 "[" _eps "false"
    "true" )
   (follow ")")
-  (alt _empty _collection_2))
- (rule constraint "15"
-  (first "!" "[")
-  (follow "!" "." "/" "=" "[" "]")
-  (alt _constraint_1 "!"))
+  (seq _collection_1))
  (rule _constraint_1 "15.1"
   (first "[")
   (follow "!" "." "/" "=" "[" "]")
@@ -465,7 +465,7 @@
   (first "=" "]")
   (follow "!" "." "/" "=" "[" "]")
   (seq _constraint_2 "]"))
- (rule slice "16" (first ".." INDEX) (follow "(") (seq _slice_1 ".." _slice_2))
+ (rule slice "16" (first ".." INTEGER) (follow "(") (seq _slice_1 ".." _slice_2))
  (rule NumericLiteral "16t"
   (first DECIMAL DOUBLE INTEGER)
   (follow "!" "(" ")" "," "." "/" ";" ANON BLANK_NODE_LABEL DECIMAL DOUBLE
@@ -473,11 +473,10 @@
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "false" "true" "}" )
   (alt INTEGER DECIMAL DOUBLE))
- (rule _slice_1 "16.1" (first INDEX _eps) (follow "..") (alt _empty INDEX))
- (rule _slice_2 "16.2" (first INDEX _eps) (follow "(") (alt _empty INDEX))
+ (rule _slice_1 "16.1" (first INTEGER _eps) (follow "..") (alt _empty INTEGER))
+ (rule _slice_2 "16.2" (first INTEGER _eps) (follow "(") (alt _empty INTEGER))
  (rule _slice_3 "16.3" (first "..") (follow "(") (seq ".." _slice_2))
- (rule _slice_4 "16.4" (first INDEX _eps) (follow "(") (seq _slice_2))
- (terminal INDEX "17" (seq (opt "-") (plus (range "0-9"))))
+ (rule _slice_4 "16.4" (first INTEGER _eps) (follow "(") (seq _slice_2))
  (rule String "17"
   (first STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
    STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE )
@@ -528,20 +527,13 @@
   (seq "\"\"\"" (seq (opt (alt "\"" "\"\"")) (range "^\"] | ECHAR | UCHAR ))* '\"\"\"'"))))
  (terminal UCHAR "26"
   (alt (seq "\\u" HEX HEX HEX HEX) (seq "\\U" HEX HEX HEX HEX HEX HEX HEX HEX)))
- (rule _RDFLiteral_2 "128s.2"
-  (first LANGTAG "^^")
+ (rule _RDFLiteral_1 "128s.1"
+  (first LANGTAG "^^" _eps)
   (follow "!" "(" ")" "," "." "/" ";" ANON BLANK_NODE_LABEL DECIMAL DOUBLE
    INTEGER IRIREF PNAME_LN PNAME_NS STRING_LITERAL_LONG_QUOTE
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "false" "true" "}" )
-  (alt LANGTAG _RDFLiteral_3))
- (rule _RDFLiteral_3 "128s.3"
-  (first "^^")
-  (follow "!" "(" ")" "," "." "/" ";" ANON BLANK_NODE_LABEL DECIMAL DOUBLE
-   INTEGER IRIREF PNAME_LN PNAME_NS STRING_LITERAL_LONG_QUOTE
-   STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
-   STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "false" "true" "}" )
-  (seq "^^" iri))
+  (alt _empty _RDFLiteral_2))
  (rule RDFLiteral "128s"
   (first STRING_LITERAL_LONG_QUOTE STRING_LITERAL_LONG_SINGLE_QUOTE
    STRING_LITERAL_QUOTE STRING_LITERAL_SINGLE_QUOTE )
@@ -550,6 +542,13 @@
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "false" "true" "}" )
   (seq String _RDFLiteral_1))
+ (rule _RDFLiteral_2 "128s.2"
+  (first LANGTAG "^^")
+  (follow "!" "(" ")" "," "." "/" ";" ANON BLANK_NODE_LABEL DECIMAL DOUBLE
+   INTEGER IRIREF PNAME_LN PNAME_NS STRING_LITERAL_LONG_QUOTE
+   STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
+   STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "false" "true" "}" )
+  (alt LANGTAG _RDFLiteral_3))
  (rule _RDFLiteral_4 "128s.4"
   (first LANGTAG "^^" _eps)
   (follow "!" "(" ")" "," "." "/" ";" ANON BLANK_NODE_LABEL DECIMAL DOUBLE
@@ -557,13 +556,13 @@
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "false" "true" "}" )
   (seq _RDFLiteral_1))
- (rule _RDFLiteral_1 "128s.1"
-  (first LANGTAG "^^" _eps)
+ (rule _RDFLiteral_3 "128s.3"
+  (first "^^")
   (follow "!" "(" ")" "," "." "/" ";" ANON BLANK_NODE_LABEL DECIMAL DOUBLE
    INTEGER IRIREF PNAME_LN PNAME_NS STRING_LITERAL_LONG_QUOTE
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "false" "true" "}" )
-  (alt _empty _RDFLiteral_2))
+  (seq "^^" iri))
  (rule BooleanLiteral "133s"
   (first "false" "true")
   (follow "!" "(" ")" "," "." "/" ";" ANON BLANK_NODE_LABEL DECIMAL DOUBLE
@@ -574,14 +573,14 @@
  (rule iri "135s"
   (first IRIREF PNAME_LN PNAME_NS)
   (follow "!" "(" ")" "," "." ".." "/" ";" "=" ANON BLANK_NODE_LABEL DECIMAL
-   DOUBLE INDEX INTEGER IRIREF PNAME_LN PNAME_NS STRING_LITERAL_LONG_QUOTE
+   DOUBLE INTEGER IRIREF PNAME_LN PNAME_NS STRING_LITERAL_LONG_QUOTE
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "a" "false" "true" "}" )
   (alt IRIREF PrefixedName))
  (rule PrefixedName "136s"
   (first PNAME_LN PNAME_NS)
   (follow "!" "(" ")" "," "." ".." "/" ";" "=" ANON BLANK_NODE_LABEL DECIMAL
-   DOUBLE INDEX INTEGER IRIREF PNAME_LN PNAME_NS STRING_LITERAL_LONG_QUOTE
+   DOUBLE INTEGER IRIREF PNAME_LN PNAME_NS STRING_LITERAL_LONG_QUOTE
    STRING_LITERAL_LONG_SINGLE_QUOTE STRING_LITERAL_QUOTE
    STRING_LITERAL_SINGLE_QUOTE VAR1 "[" "]" "a" "false" "true" "}" )
   (alt PNAME_LN PNAME_NS))
