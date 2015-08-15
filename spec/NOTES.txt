@@ -1,0 +1,40 @@
+# Bind
+
+These examples are of more complicated binds which are syntactically correct. The test suite could probably use more pathological examples.
+
+	Bind ?x :a / :b / :c
+	Bind ?x :a / ^:b / :c
+	Bind ?x :a [ / :p = "v"] / :c / ^:d
+	Bind ?x :a / 1 / :b
+	Bind ?x :a / [ / :c / :d = "bar"] / ^:e
+	Bind ?x :a / ! / ^:e
+	Bind ?x :a / [ / :c / ! / [:d = "bar"] / ^:e]
+
+What is the effect of a bind statement using unbound variables (as values)?
+
+A unicity constraint ("!") at the end of a path seems redundant, but might be used within a path.
+
+The above Bind statements might be equivalent to the following SPARQL queries.
+
+	SELECT ?x WHERE {:a :b / :c ?x}
+	SELECT ?x WHERE {:a ^:b / :c ?x }
+	SELECT ?x WHERE {:a :p "v"; :c / ^:d ?x }
+	SELECT ?x WHERE {:a rdf:rest _:0 . _:0 rdf:first _:1 . _:1 :b ?x}
+	SELECT ?x WHERE {:a :c/:d "bar"; ^:e ?x}
+	SELECT ?x WHERE {?a ^:e ?x} GROUP BY ?a HAVING(COUNT(?a) = 1)
+
+where each query must have exactly one single result.
+
+Compiling such queries is non-trivial; any thought about an informative section on turning Bind statements into SPARQL queries? For this to work with indexes would require a hypothetical extension to SPARQL introducing some INDEX-like extension to property-paths.
+
+# Add
+Can a graph contain unbound variables?
+Are they treated just like BNodes?
+Do such variables create bindings for subsequent usage?
+
+# Delete
+Same for add, can a delete graph contain unbound variables? Is this an error?
+
+# Cut
+Can the argument of Cut be an IRI? Doc indicates it's a BNode, or variable binding to a BNode.
+Is it an error to attempt to cut an unbound variable?
