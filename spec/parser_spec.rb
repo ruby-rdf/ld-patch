@@ -25,7 +25,7 @@ describe LD::Patch::Parser do
 
   describe "Empty" do
     it "renders an empty patch" do
-      expect("").to generate("()")
+      expect("").to generate("(patch)")
     end
   end
 
@@ -33,19 +33,19 @@ describe LD::Patch::Parser do
     {
       "add-1triple" => {
         input: %(Add { <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> } .),
-        result: %(((add ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
+        result: %((patch (add ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
       },
       "add-abbr-1triple" => {
         input: %(A { <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> } .),
-        result: %(((add ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
+        result: %((patch (add ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
       },
       "addnew-1triple" => {
         input: %(AddNew { <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> } .),
-        result: %(((add ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
+        result: %((patch (add ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
       },
       "addnew-abbr-1triple" => {
         input: %(AN { <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> } .),
-        result: %(((add ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
+        result: %((patch (add ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
       },
     }.each do |name, params|
       it name do
@@ -62,8 +62,8 @@ describe LD::Patch::Parser do
 
           Add { ?x <http://example.org/p2> <http://example.org/o2> } .
         ),
-        result: %((
-          (bind ?x <http://example.org/s2> ())
+        result: %((patch
+          (bind ?x <http://example.org/s2> (path))
           (add ((triple ?x <http://example.org/p2> <http://example.org/o2>)))
         ))
       },
@@ -73,8 +73,8 @@ describe LD::Patch::Parser do
 
           Add { ?x <http://example.org/p2> <http://example.org/o2> } .
         ),
-        result: %((
-          (bind ?x <http://example.org/s2> ())
+        result: %((patch
+          (bind ?x <http://example.org/s2> (path))
           (add ((triple ?x <http://example.org/p2> <http://example.org/o2>)))
         ))
       },
@@ -85,9 +85,9 @@ describe LD::Patch::Parser do
 
           Add { ?x <http://example.org/p2> <http://example.org/o2> } .
         ),
-        result: %((
-          (bind ?x <http://example.org/s1> ())
-          (bind ?x <http://example.org/s2> ())
+        result: %((patch
+          (bind ?x <http://example.org/s1> (path))
+          (bind ?x <http://example.org/s2> (path))
           (add ((triple ?x <http://example.org/p2> <http://example.org/o2>)))
         ))
       },
@@ -97,8 +97,8 @@ describe LD::Patch::Parser do
 
           Add { ?x a <http://example.org/Found> } .
         ),
-        result: %((
-          (bind ?x <http://example.org/s> ((index 1)))
+        result: %((patch
+          (bind ?x <http://example.org/s> (path (index 1)))
           (add ((triple ?x a <http://example.org/Found>)))
         ))
       },
@@ -108,8 +108,8 @@ describe LD::Patch::Parser do
 
           Add {?x a <http://example.org/Found> .}.
         ),
-        result: %((
-          (bind ?x <http://example.org/s> ((reverse <http://example.org/p1>)))
+        result: %((patch
+          (bind ?x <http://example.org/s> (path (reverse <http://example.org/p1>)))
           (add ((triple ?x a <http://example.org/Found>)))
         ))
       },
@@ -119,8 +119,8 @@ describe LD::Patch::Parser do
 
           Add { ?x a <http://example.org/Found> } .
         ),
-        result: %((
-          (bind ?x <http://example.org/s> (<http://example.org/p2> (constraint (<http://example.org/l>) "b")))
+        result: %((patch
+          (bind ?x <http://example.org/s> (path <http://example.org/p2> (constraint (path <http://example.org/l>) "b")))
           (add ((triple ?x a <http://example.org/Found>)))
         ))
       },
@@ -130,8 +130,8 @@ describe LD::Patch::Parser do
 
           Add { ?x a <http://example.org/Found> } .
         ),
-        result: %((
-          (bind ?x <http://example.org/s> (<http://example.org/p2> (constraint (<http://example.org/p1>))))
+        result: %((patch
+          (bind ?x <http://example.org/s> (path <http://example.org/p2> (constraint (path <http://example.org/p1>))))
           (add ((triple ?x a <http://example.org/Found>)))
         ))
       },
@@ -141,14 +141,14 @@ describe LD::Patch::Parser do
 
           Add { ?x a <http://example.org/Found> } .
         ),
-        result: %((
-          (bind ?x "a" ((reverse <http://example.org/l>) (reverse <http://example.org/p2>)))
+        result: %((patch
+          (bind ?x "a" (path (reverse <http://example.org/l>) (reverse <http://example.org/p2>)))
           (add ((triple ?x a <http://example.org/Found>)))
         ))
       },
       "path-unicity" => {
         input: %(Bind ?x <http://example.org/s> / <http://example.org/p1> ! .),
-        result: %(((bind ?x <http://example.org/s> (<http://example.org/p1> (constraint unique)))))
+        result: %((patch (bind ?x <http://example.org/s> (path <http://example.org/p1> (constraint unique)))))
       },
     }.each do |name, params|
       it name do
@@ -165,8 +165,8 @@ describe LD::Patch::Parser do
 
           Cut ?x .
         ),
-        result: %((
-          (bind ?x <http://example.org/s> (<http://example.org/p2> (constraint (<http://example.org/l>) "a")))
+        result: %((patch
+          (bind ?x <http://example.org/s> (path <http://example.org/p2> (constraint (path <http://example.org/l>) "a")))
           (cut ?x)
         ))
       },
@@ -176,8 +176,8 @@ describe LD::Patch::Parser do
 
           C ?x .
         ),
-        result: %((
-          (bind ?x <http://example.org/s> (<http://example.org/p2> (constraint (<http://example.org/l>) "a")))
+        result: %((patch
+          (bind ?x <http://example.org/s> (path <http://example.org/p2> (constraint (path <http://example.org/l>) "a")))
           (cut ?x)
         ))
       },
@@ -192,19 +192,19 @@ describe LD::Patch::Parser do
     {
       "delete-1triple" => {
         input: %(Delete { <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> } .),
-        result: %(((delete ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
+        result: %((patch (delete ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
       },
       "delete-abbr-1triple" => {
         input: %(D { <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> } .),
-        result: %(((delete ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
+        result: %((patch (delete ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
       },
       "deleteexisting-1triple" => {
         input: %(DeleteExisting { <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> } .),
-        result: %(((delete ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
+        result: %((patch (delete ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
       },
       "deleteexisting-abbr-1triple" => {
         input: %(DE { <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> } .),
-        result: %(((delete ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
+        result: %((patch (delete ((triple <http://example.org/s2> <http://example.org/p2> <http://example.org/o2>)))))
       },
     }.each do |name, params|
       it name do
@@ -217,19 +217,19 @@ describe LD::Patch::Parser do
     {
       "updatelist" => {
         input: %(UpdateList <#> <http://example.org/vocab#preferredLanguages> 1..3 ( "IPSUM DOLOR" ) .),
-        result: %(((update_list <#> <http://example.org/vocab#preferredLanguages> (slice 1 3 ( "IPSUM DOLOR" )))))
+        result: %((patch (update_list <#> <http://example.org/vocab#preferredLanguages> (slice 1 3 ( "IPSUM DOLOR" )))))
       },
       "updatelist-abbr" => {
         input: %(UL <#> <http://example.org/vocab#preferredLanguages> 1..3 ( "IPSUM DOLOR" ) .),
-        result: %(((update_list <#> <http://example.org/vocab#preferredLanguages> (slice 1 3 ( "IPSUM DOLOR" )))))
+        result: %((patch (update_list <#> <http://example.org/vocab#preferredLanguages> (slice 1 3 ( "IPSUM DOLOR" )))))
       },
       "updatelist-nil" => {
         input: %(UpdateList <#> <http://example.org/vocab#preferredLanguages> .. ("fr" "en") .),
-        result: %(((update_list <#> <http://example.org/vocab#preferredLanguages> (slice http://www.w3.org/1999/02/22-rdf-syntax-ns#nil http://www.w3.org/1999/02/22-rdf-syntax-ns#nil ( "fr" "en" )))))
+        result: %((patch (update_list <#> <http://example.org/vocab#preferredLanguages> (slice http://www.w3.org/1999/02/22-rdf-syntax-ns#nil http://www.w3.org/1999/02/22-rdf-syntax-ns#nil ( "fr" "en" )))))
       },
       "updatelist-exceed-size-negative" => {
         input: %(UpdateList <#> <http://example.org/vocab#preferredLanguages> -6.. ( "LOREM" "IPSUM" ) .),
-        result: %(((update_list <#> <http://example.org/vocab#preferredLanguages> (slice -6 http://www.w3.org/1999/02/22-rdf-syntax-ns#nil ( "LOREM" "IPSUM" )))))
+        result: %((patch (update_list <#> <http://example.org/vocab#preferredLanguages> (slice -6 http://www.w3.org/1999/02/22-rdf-syntax-ns#nil ( "LOREM" "IPSUM" )))))
       },
     }.each do |name, params|
       it name do
@@ -253,15 +253,15 @@ describe LD::Patch::Parser do
               ?b3 rdfs:label "b3" .
           } .
           ),
-        result: %((
+        result: %(
           (prefix ((rdfs <http://www.w3.org/2000/01/rdf-schema#>) (schema <http://schema.org/>))
-            (
-              (bind ?b3 "W3C/MIT" ((reverse schema:name)))
-              (bind ?b2 ?b3 ((reverse schema:workLocation)))
+            (patch
+              (bind ?b3 "W3C/MIT" (path (reverse schema:name)))
+              (bind ?b2 ?b3 (path (reverse schema:workLocation)))
               (add ((triple ?b2 rdfs:label "b2") (triple ?b3 rdfs:label "b3")))
             )
           )
-        ))
+        )
       },
       "bnode-fresh.ldpatch" => {
         input: %(
@@ -270,7 +270,7 @@ describe LD::Patch::Parser do
           } .
         ),
         result: %(
-          ((add ((triple <http://example.org/s2> <http://example.org/p2> _:genid1))))
+          (patch (add ((triple <http://example.org/s2> <http://example.org/p2> _:genid1))))
         )
       },
       "blankNodePropertyList_as_object.ldpatch" => {
@@ -280,8 +280,9 @@ describe LD::Patch::Parser do
           } .
         ),
         result: %(
-          ((add ((triple _:b0 <http://a.example/p2> <http://a.example/o2>)
-                 (triple <http://a.example/s> <http://a.example/p> _:b0))))
+          (patch
+            (add ((triple _:b0 <http://a.example/p2> <http://a.example/o2>)
+                  (triple <http://a.example/s> <http://a.example/p> _:b0))))
         )
       },
     }.each do |name, params|

@@ -9,23 +9,11 @@ module LD
   #
   # @author [Gregg Kellogg](http://greggkellogg.net/)
   module Patch
+    autoload :Algebra,      'ld/patch/algebra'
     autoload :Meta,         'ld/patch/meta'
     autoload :Parser,       'ld/patch/parser'
     autoload :Terminals,    'ld/patch/terminals'
     autoload :Version,      'ld/patch/version'
-
-    module Algebra
-      autoload :Add,        'ld/patch/algebra/add'
-      autoload :Bind,       'ld/patch/algebra/bind'
-      autoload :Constraint, 'ld/patch/algebra/constraint'
-      autoload :Cut,        'ld/patch/algebra/cut'
-      autoload :Delete,     'ld/patch/algebra/delete'
-      autoload :Index,      'ld/patch/algebra/index'
-      autoload :Prefix,     'ld/patch/algebra/prefix'
-      autoload :Reverse,    'ld/patch/algebra/reverse'
-      autoload :Slice,      'ld/patch/algebra/slice'
-      autoload :UpdateList, 'ld/patch/algebra/update_list'
-    end
 
     ##
     # Parse the given LD Patch `input` string.

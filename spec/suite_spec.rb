@@ -22,20 +22,24 @@ describe LD::Patch do
             end
             t.debug = []
             begin
-              ast = LD::Patch.parse(t.input,
+              operator = LD::Patch.parse(t.input,
                 base_uri: t.base,
                 debug:    t.debug
               )
               if t.positive_test?
                 if t.evaluate?
                   pending "positive evaluation tests"
+                  operator.execute(t.target_graph)
+                  expect(t.target_graph).to be_equivalent_graph(t.expected_graph, t)
                   fail
                 else
-                  expect(ast).to be_a(Array)
+                  expect(operator).to be_a(SPARQL::Algebra::Operator)
                 end
               else
                 if t.evaluate?
                   pending "negative evaluation tests"
+                  operator.execute(t.target_graph)
+                  expect(t.target_graph).not_to be_equivalent_graph(t.expected_graph, t)
                   fail
                 else
                   fail("Should have raised a parser error")

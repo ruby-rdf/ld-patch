@@ -126,7 +126,7 @@ module LD::Patch
 
     # [1]	ldpatch	::=	prologue statement*
     production(:ldpatch) do |input, current, callback|
-      patch = Array(current[:statements])
+      patch = Algebra::Patch.new(*current[:statements])
       input[:ldpatch] = if prefixes.empty?
         patch
       else
@@ -136,7 +136,8 @@ module LD::Patch
 
     # [4]	bind	::=	("Bind" | "B") VAR1 value path? "."
     production(:bind) do |input, current, callback|
-      (input[:statements] ||= []) << Algebra::Bind.new(current[:resource], current[:value], Array(current[:path]))
+      path = Algebra::Path.new(*Array(current[:path]))
+      (input[:statements] ||= []) << Algebra::Bind.new(current[:resource], current[:value], path)
     end
 
     # [5]	add	::=	("Add" | "A") "{" graph "}" "."
@@ -190,10 +191,11 @@ module LD::Patch
 
     # [15] constraint ::= '[' path ( '=' value )? ']' | '!'
     production(:constraint) do |input, current, callback|
+      path = Algebra::Path.new(*Array(current[:path]))
       input[:constraint] = if current[:value]
-        Algebra::Constraint.new(current[:path], current[:value])
+        Algebra::Constraint.new(path, current[:value])
       elsif current[:path]
-        Algebra::Constraint.new(current[:path])
+        Algebra::Constraint.new(path)
       else
         Algebra::Constraint.new(:unique)
       end
@@ -403,7 +405,7 @@ module LD::Patch
       when prod_data.empty?
         nil
       when prod_data[:ldpatch]
-        Array(prod_data[:ldpatch])
+        prod_data[:ldpatch]
       else
         key = prod_data.keys.first
         [key] + Array(prod_data[key])  # Creates [:key, [:triple], ...]

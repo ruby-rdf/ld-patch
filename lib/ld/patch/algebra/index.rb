@@ -1,7 +1,9 @@
 module LD::Patch::Algebra
 
   ##
-  # The LD Patch `index` operator
+  # The LD Patch `index` operator.
+  #
+  # Presuming that the input term identifies an rdf:List, returns the list element indexted by the single operand, or an empty solution set
   class Index < SPARQL::Algebra::Operator::Unary
     include SPARQL::Algebra::Query
 
@@ -14,17 +16,19 @@ module LD::Patch::Algebra
     #   the graph or repository to write
     # @param  [Hash{Symbol => Object}] options
     #   any additional options
-    # @option options [Boolean] :new
-    #   Specifies that triples may not exist in the output graph
-    # @return [RDF::Queryable]
-    #   Returns queryable.
-    # @raise [IOError]
-    #   If no triples are identified, or the operand is an unbound variable
-    # @see    http://www.w3.org/TR/sparql11-update/
+    # @option options [Array<RDF::Term>] starting terms
+    # @return [RDF::Query::Solutions] solutions with `:term` mapping
     def execute(queryable, options = {})
       debug(options) {"Index"}
+      terms = Array(options.fetch(:terms))
+      index = operand(0)
 
-      queryable
+      RDF::Query::Solutions.new terms.map do |term|
+        list = RDF::List.new(term, queryable)
+        list.at(index)
+      end.flatten.map do |t|
+        RDF::Query::Solution.new(path: t)
+      end
     end
   end
 end

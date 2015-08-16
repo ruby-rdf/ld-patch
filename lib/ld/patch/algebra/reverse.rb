@@ -2,6 +2,13 @@ module LD::Patch::Algebra
 
   ##
   # The LD Patch `reverse` operator
+  #
+  # Finds all the terms which are the subject of triples where the `operand` is the predicate and input terms are objects.
+  #
+  # @example
+  #     (reverse :p)
+  #
+  #   Queries `queryable` for subjects where input terms are objects and the predicate is `:p`, by executing the `reverse` operand using input terms to get a set of output terms.
   class Reverse < SPARQL::Algebra::Operator::Unary
     include SPARQL::Algebra::Query
 
@@ -14,17 +21,17 @@ module LD::Patch::Algebra
     #   the graph or repository to write
     # @param  [Hash{Symbol => Object}] options
     #   any additional options
-    # @option options [Boolean] :new
-    #   Specifies that triples may not exist in the output graph
-    # @return [RDF::Queryable]
-    #   Returns queryable.
-    # @raise [IOError]
-    #   If no triples are identified, or the operand is an unbound variable
-    # @see    http://www.w3.org/TR/sparql11-update/
+    # @option options [Array<RDF::Term>] starting terms
+    # @return [RDF::Query::Solutions] solutions with `:term` mapping
     def execute(queryable, options = {})
       debug(options) {"Reverse"}
+      terms = Array(options.fetch(:terms))
 
-      queryable
+      RDF::Query::Solutions.new terms.map do |object|
+        queryable.query(subject: subject, predicate: op, &:object)
+      end.flatten.map do |term|
+        RDF::Query::Solution.new(path: term)
+      end
     end
   end
 end

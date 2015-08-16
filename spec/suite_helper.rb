@@ -138,6 +138,10 @@ module Fixtures
         @expected ||= RDF::Util::File.open_file(result) {|f| f.read}
       end
 
+      def expected_graph
+        @expected_graph = RDF::Graph.load(result, base_uri: base)
+      end
+
       def evaluate?
         Array(attributes['@type']).join(" ").match(/Eval/)
       end
