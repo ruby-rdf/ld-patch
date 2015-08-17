@@ -21,8 +21,6 @@ module LD::Patch::Algebra
     #   the graph or repository to write
     # @param  [Hash{Symbol => Object}] options
     #   any additional options
-    # @option options [Boolean] :new
-    #   Specifies that triples may not exist in the output graph
     # @return [RDF::Queryable]
     #   Returns queryable.
     # @raise [IOError]
@@ -30,7 +28,23 @@ module LD::Patch::Algebra
     # @see    http://www.w3.org/TR/sparql11-update/
     def execute(queryable, options = {})
       debug(options) {"Cut"}
+      bindings = options.fetch(:bindings)
+      solution = bindings.first
+      var = operand(0)
 
+      # Bind variable
+      raise LD::Patch::Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(var)
+      var = solution[var]
+
+      # Get triples to delete using consice bounded description
+      queryable.concise_bounded_description(var) do |statement|
+        queryable.delete(statement)
+      end
+
+      # Also delete triples having var in the object position
+      queryable.query(object: var).each do |statement|
+        queryable.delete(statement)
+      end
       queryable
     end
   end

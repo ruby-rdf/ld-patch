@@ -74,12 +74,12 @@ module LD::Patch::Algebra
 
       # Bind variables to path
       if value.variable?
-        raise LD::Patch::Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(value)
+        raise LD::Patch::Error, "Operand uses unbound variable #{value.inspect}" unless solution.bound?(value)
         value = solution[variable]
       end
 
       path = path.dup.replace_vars! do |v|
-        raise Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(v)
+        raise Error, "Operand uses unbound variable #{v.inspect}" unless solution.bound?(v)
         solution[v]
       end
       results = path.execute(queryable, terms: [value])
