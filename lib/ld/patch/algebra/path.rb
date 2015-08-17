@@ -31,6 +31,7 @@ module LD::Patch::Algebra
   #   Maps terms using `(path :p)`, using them as terms for `(path :q)`, then subsets these based on the constraint.
   class Path < SPARQL::Algebra::Operator
     include SPARQL::Algebra::Query
+    include SPARQL::Algebra::Evaluatable
 
     NAME = :path
 
@@ -51,18 +52,18 @@ module LD::Patch::Algebra
         case op
         when RDF::URI
           terms.map do |subject|
-            queryable.query(subject: subject, predicate: op, &:object)
+            queryable.query(subject: subject, predicate: op).map(&:object)
           end.flatten
         when SPARQL::Algebra::Query
           # Get path solutions for each term for op
-          op.execute(queryable, options.merge(terms: term)).map do |soln|
+          op.execute(queryable, options.merge(terms: terms)).map do |soln|
             soln.path
           end.flatten
         else
-          raise NotImplemented, "Unknown path operand #{op.inspect}"
+          raise NotImplementedError, "Unknown path operand #{op.inspect}"
         end
       end.each do |term|
-        solutions << RDF::Query::Solution.new(term: term)
+        solutions << RDF::Query::Solution.new(path: term)
       end
       solutions
     end

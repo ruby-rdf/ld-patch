@@ -23,12 +23,12 @@ module LD::Patch::Algebra
       terms = Array(options.fetch(:terms))
       index = operand(0)
 
-      RDF::Query::Solutions.new terms.map do |term|
+      results = terms.map do |term|
         list = RDF::List.new(term, queryable)
-        list.at(index)
-      end.flatten.map do |t|
-        RDF::Query::Solution.new(path: t)
-      end
+        list.at(index.to_i)
+      end.flatten
+
+      RDF::Query::Solutions.new(results.map {|t| RDF::Query::Solution.new(path: t)})
     end
   end
 end

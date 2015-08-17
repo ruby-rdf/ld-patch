@@ -28,10 +28,8 @@ describe LD::Patch do
               )
               if t.positive_test?
                 if t.evaluate?
-                  pending "positive evaluation tests"
-                  operator.execute(t.target_graph)
+                  ug = operator.execute(t.target_graph)
                   expect(t.target_graph).to be_equivalent_graph(t.expected_graph, t)
-                  fail
                 else
                   expect(operator).to be_a(SPARQL::Algebra::Operator)
                 end

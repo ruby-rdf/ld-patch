@@ -10,6 +10,7 @@ module LD::Patch::Algebra
   #
   class Delete < SPARQL::Algebra::Operator::Unary
     include SPARQL::Algebra::Update
+    include SPARQL::Algebra::Evaluatable
 
     NAME = :delete
 
@@ -34,14 +35,14 @@ module LD::Patch::Algebra
 
       # Bind variables to triples
       triples = operand(0).dup.replace_vars! do |var|
-        raise Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(var)
+        raise LD::Patch::Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(var)
         solution[var]
       end
 
       # If `:new` is specified, verify that no triple in triples exists in queryable
       if options[:existing]
         triples.each do |triple|
-          raise Error, "Target graph does not contain triple #{triple.to_ntriples}" unless queryable.has_statement?(triple)
+          raise LD::Patch::Error, "Target graph does not contain triple #{triple.to_ntriples}" unless queryable.has_statement?(triple)
         end
       end
 

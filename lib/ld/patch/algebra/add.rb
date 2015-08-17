@@ -10,6 +10,7 @@ module LD::Patch::Algebra
   #
   class Add < SPARQL::Algebra::Operator::Unary
     include SPARQL::Algebra::Update
+    include SPARQL::Algebra::Evaluatable
 
     NAME = :add
 
@@ -34,14 +35,21 @@ module LD::Patch::Algebra
 
       # Bind variables to triples
       triples = operand(0).dup.replace_vars! do |var|
-        raise Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(var)
-        solution[var]
+        case var
+        when RDF::Query::Pattern
+          s = var.bind(solution)
+          raise LD::Patch::Error, "Operand uses unbound variable #{s.inspect}" if s.variable?
+          s
+        when RDF::Query::Variable
+          raise LD::Patch::Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(var)
+          solution[var]
+        end
       end
 
       # If `:new` is specified, verify that no triple in triples exists in queryable
       if options[:new]
         triples.each do |triple|
-          raise Error, "Target graph contains added triple #{triple.to_ntriples}" if queryable.has_statement?(triple)
+          raise LD::Patch::Error, "Target graph contains added triple #{triple.to_ntriples}" if queryable.has_statement?(triple)
         end
       end
 

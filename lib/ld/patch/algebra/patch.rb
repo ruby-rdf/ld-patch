@@ -34,6 +34,7 @@ module LD::Patch::Algebra
         break if graph.equal?(queryable)
         graph = queryable
       end
+      queryable
     end
   end
 end

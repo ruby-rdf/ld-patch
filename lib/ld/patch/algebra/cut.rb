@@ -10,6 +10,7 @@ module LD::Patch::Algebra
   #
   class Cut < SPARQL::Algebra::Operator::Unary
     include SPARQL::Algebra::Update
+    include SPARQL::Algebra::Evaluatable
 
     NAME = :cut
 

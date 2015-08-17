@@ -21,6 +21,7 @@ module LD::Patch::Algebra
   #
   #   Returns the single term from the input terms if there is a single input term.
   class Constraint < SPARQL::Algebra::Operator
+    include SPARQL::Algebra::Query
     include SPARQL::Algebra::Evaluatable
 
     NAME = :constraint
@@ -49,9 +50,7 @@ module LD::Patch::Algebra
           !output_terms.empty?
         end
       end
-      RDF::Query::Solutions.new results.map do |term|
-        RDF::Query::Solution.new(path: term)
-      end
+      RDF::Query::Solutions.new(results.map {|t| RDF::Query::Solution.new(path: t)})
     end
   end
 end

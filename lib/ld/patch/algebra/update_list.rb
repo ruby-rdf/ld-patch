@@ -5,6 +5,7 @@ module LD::Patch::Algebra
   #
   class UpdateList < SPARQL::Algebra::Operator::Ternary
     include SPARQL::Algebra::Update
+    include SPARQL::Algebra::Evaluatable
 
     NAME = :update_list
 

@@ -14,6 +14,28 @@ describe LD::Patch::Algebra do
         <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> .
       )
     },
+    "bind" => {
+      data: %(<http://example.org/s1> <http://example.org/p1> <http://example.org/o1> .),
+      patch: %(
+        Bind ?x <http://example.org/s2> .
+
+        Add { ?x <http://example.org/p2> <http://example.org/o2> } .
+      ),
+      result: %(
+        <http://example.org/s1> <http://example.org/p1> <http://example.org/o1> .
+        <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> .
+      )
+    },
+    "delete-1triple" => {
+      data: %(
+        <http://example.org/s1> <http://example.org/p1> <http://example.org/o1> .
+        <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> .
+      ),
+      patch: %(Delete { <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> } .),
+      result: %(
+        <http://example.org/s1> <http://example.org/p1> <http://example.org/o1> .
+      )
+    },
   }.each do |name, props|
     it name do
       graph = RDF::Graph.new << RDF::NTriples::Reader.new(props[:data])

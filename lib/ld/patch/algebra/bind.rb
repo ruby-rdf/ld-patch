@@ -50,6 +50,7 @@ module LD::Patch::Algebra
   #      (unique ??0)))
   class Bind < SPARQL::Algebra::Operator::Ternary
     include SPARQL::Algebra::Query
+    include SPARQL::Algebra::Evaluatable
 
     NAME = :bind
 
@@ -72,13 +73,18 @@ module LD::Patch::Algebra
       var, value, path = operands
 
       # Bind variables to path
+      if value.variable?
+        raise LD::Patch::Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(value)
+        value = solution[variable]
+      end
+
       path = path.dup.replace_vars! do |v|
         raise Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(v)
         solution[v]
       end
       results = path.execute(queryable, terms: [value])
-      raise Error, "Bind path bound to #{results.length} terms, expected just one" unless results.length == 1
-      RDF::Query::Solutions.new [solution.merge(var => results.first)]
+      raise LD::Patch::Error, "Bind path bound to #{results.length} terms, expected just one" unless results.length == 1
+      RDF::Query::Solutions.new [solution.merge(var.to_sym => results.first.path)]
     end
   end
 end

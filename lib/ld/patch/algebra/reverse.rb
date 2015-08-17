@@ -11,6 +11,7 @@ module LD::Patch::Algebra
   #   Queries `queryable` for subjects where input terms are objects and the predicate is `:p`, by executing the `reverse` operand using input terms to get a set of output terms.
   class Reverse < SPARQL::Algebra::Operator::Unary
     include SPARQL::Algebra::Query
+    include SPARQL::Algebra::Evaluatable
 
     NAME = :reverse
 
@@ -25,13 +26,14 @@ module LD::Patch::Algebra
     # @return [RDF::Query::Solutions] solutions with `:term` mapping
     def execute(queryable, options = {})
       debug(options) {"Reverse"}
+      op = operand(0)
       terms = Array(options.fetch(:terms))
 
-      RDF::Query::Solutions.new terms.map do |object|
-        queryable.query(subject: subject, predicate: op, &:object)
-      end.flatten.map do |term|
-        RDF::Query::Solution.new(path: term)
-      end
+      results = terms.map do |object|
+        queryable.query(object: object, predicate: op).map(&:subject)
+      end.flatten
+
+      RDF::Query::Solutions.new(results.map {|t| RDF::Query::Solution.new(path: t)})
     end
   end
 end
