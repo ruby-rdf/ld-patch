@@ -167,9 +167,8 @@ module LD::Patch
 
     # [10] updateList ::= ("UpdateList" | "UL") varOrIRI predicate slice collection "."
     production(:updateList) do |input, current, callback|
-      slice = Algebra::Slice.new(current[:slice1], current[:slice2], current[:collection].to_a)
       var_or_iri = current[:resource] || current[:iri]
-      (input[:statements] ||= []) << Algebra::UpdateList.new(var_or_iri, current[:predicate], slice)
+      (input[:statements] ||= []) << Algebra::UpdateList.new(var_or_iri, current[:predicate], current[:slice1], current[:slice2], current[:collection].to_a)
     end
 
     # [12]	value	::=	iri | literal | VAR1

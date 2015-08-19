@@ -17,7 +17,6 @@ module LD::Patch
     autoload :Path,       'ld/patch/algebra/path'
     autoload :Prefix,     'ld/patch/algebra/prefix'
     autoload :Reverse,    'ld/patch/algebra/reverse'
-    autoload :Slice,      'ld/patch/algebra/slice'
     autoload :UpdateList, 'ld/patch/algebra/update_list'
   end
 end

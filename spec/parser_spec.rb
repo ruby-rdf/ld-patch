@@ -217,19 +217,19 @@ describe LD::Patch::Parser do
     {
       "updatelist" => {
         input: %(UpdateList <#> <http://example.org/vocab#preferredLanguages> 1..3 ( "IPSUM DOLOR" ) .),
-        result: %((patch (update_list <#> <http://example.org/vocab#preferredLanguages> (slice 1 3 ( "IPSUM DOLOR" )))))
+        result: %((patch (updateList <#> <http://example.org/vocab#preferredLanguages> 1 3 ( "IPSUM DOLOR" ))))
       },
       "updatelist-abbr" => {
         input: %(UL <#> <http://example.org/vocab#preferredLanguages> 1..3 ( "IPSUM DOLOR" ) .),
-        result: %((patch (update_list <#> <http://example.org/vocab#preferredLanguages> (slice 1 3 ( "IPSUM DOLOR" )))))
+        result: %((patch (updateList <#> <http://example.org/vocab#preferredLanguages> 1 3 ( "IPSUM DOLOR" ))))
       },
       "updatelist-nil" => {
         input: %(UpdateList <#> <http://example.org/vocab#preferredLanguages> .. ("fr" "en") .),
-        result: %((patch (update_list <#> <http://example.org/vocab#preferredLanguages> (slice http://www.w3.org/1999/02/22-rdf-syntax-ns#nil http://www.w3.org/1999/02/22-rdf-syntax-ns#nil ( "fr" "en" )))))
+        result: %((patch (updateList <#> <http://example.org/vocab#preferredLanguages> http://www.w3.org/1999/02/22-rdf-syntax-ns#nil http://www.w3.org/1999/02/22-rdf-syntax-ns#nil ( "fr" "en" ))))
       },
       "updatelist-exceed-size-negative" => {
         input: %(UpdateList <#> <http://example.org/vocab#preferredLanguages> -6.. ( "LOREM" "IPSUM" ) .),
-        result: %((patch (update_list <#> <http://example.org/vocab#preferredLanguages> (slice -6 http://www.w3.org/1999/02/22-rdf-syntax-ns#nil ( "LOREM" "IPSUM" )))))
+        result: %((patch (updateList <#> <http://example.org/vocab#preferredLanguages> -6 http://www.w3.org/1999/02/22-rdf-syntax-ns#nil ( "LOREM" "IPSUM" ))))
       },
     }.each do |name, params|
       it name do

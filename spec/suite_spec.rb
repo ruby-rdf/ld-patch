@@ -10,6 +10,7 @@ describe LD::Patch do
   after(:all) {WebMock.allow_net_connect!(net_http_connect_on_start: false)}
 
   %w(manifest.ttl manifest-syntax.ttl turtle/manifest-ldpatch.ttl).each do |variant|
+    #next unless variant == 'turtle/manifest-ldpatch.ttl'
     manifest = Fixtures::SuiteTest::BASE + variant
 
     Fixtures::SuiteTest::Manifest.open(manifest) do |m|

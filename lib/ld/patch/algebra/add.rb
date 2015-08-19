@@ -38,7 +38,7 @@ module LD::Patch::Algebra
         case var
         when RDF::Query::Pattern
           s = var.bind(solution)
-          raise LD::Patch::Error, "Operand uses unbound variable #{s.inspect}" if s.variable?
+          raise LD::Patch::Error, "Operand uses unbound pattern #{var.inspect}" if s.variable?
           s
         when RDF::Query::Variable
           raise LD::Patch::Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(var)

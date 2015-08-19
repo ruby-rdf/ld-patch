@@ -56,8 +56,8 @@ RSpec::Matchers.define :be_equivalent_graph do |expected, info|
     "\n#{info + "\n" unless info.empty?}" +
     (@info.action ? "Input file: #{@info.action}\n" : "") +
     (@info.result ? "Result file: #{@info.result}\n" : "") +
-    "Unsorted Expected:\n#{@expected.dump(:ntriples, standard_prefixes:  true)}" +
-    "Unsorted Results:\n#{@actual.dump(:ntriples, standard_prefixes:  true)}" +
+    "Unsorted Expected:\n#{@expected.dump(:ttl, standard_prefixes:  true)}" +
+    "Unsorted Results:\n#{@actual.dump(:ttl, standard_prefixes:  true)}" +
     (@info.trace ? "\nDebug:\n#{@info.trace}" : "")
   end  
 end

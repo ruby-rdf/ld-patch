@@ -114,7 +114,7 @@ module Fixtures
       attr_accessor :debug
 
       def base
-        action.is_a?(Hash) && (action["base"] || action["data"])
+        action.is_a?(Hash) && action.fetch("base", action["data"])
       end
 
       # Alias data and query
@@ -123,7 +123,7 @@ module Fixtures
         when Hash then action['patch']
         else action
         end
-        @input ||= RDF::Util::File.open_file(url) {|f| f.read}
+        @input ||= RDF::Util::File.open_file(URI.decode(url)) {|f| f.read}
       end
 
       def data
@@ -131,15 +131,15 @@ module Fixtures
       end
 
       def target_graph
-        @graph ||= RDF::Graph.load(data, base_uri: base)
+        @graph ||= RDF::Graph.load(URI.decode(data), base_uri: base)
       end
 
       def expected
-        @expected ||= RDF::Util::File.open_file(result) {|f| f.read}
+        @expected ||= RDF::Util::File.open_file(URI.decode(result)) {|f| f.read}
       end
 
       def expected_graph
-        @expected_graph ||= RDF::Graph.load(result, base_uri: base)
+        @expected_graph ||= RDF::Graph.load(URI.decode(result), base_uri: base)
       end
 
       def evaluate?
