@@ -544,7 +544,8 @@ module LD::Patch
           id = @options[:anon_base]
           @options[:anon_base] = @options[:anon_base].succ
         end
-        (@bnode_cache ||= {})[id.to_s] ||= RDF::Node.new(id)
+        # Don't use provided ID to avoid aliasing issues when re-serializing the graph, when the bnode identifiers are re-used
+        (@bnode_cache ||= {})[id.to_s] ||= RDF::Node.new 
       end
     end
 

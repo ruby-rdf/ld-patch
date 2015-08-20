@@ -263,28 +263,6 @@ describe LD::Patch::Parser do
           )
         )
       },
-      "bnode-fresh.ldpatch" => {
-        input: %(
-          Add {
-            <http://example.org/s2> <http://example.org/p2> _:genid1
-          } .
-        ),
-        result: %(
-          (patch (add ((triple <http://example.org/s2> <http://example.org/p2> _:genid1))))
-        )
-      },
-      "blankNodePropertyList_as_object.ldpatch" => {
-        input: %(
-          Add {
-            <http://a.example/s> <http://a.example/p> [ <http://a.example/p2> <http://a.example/o2> ] .
-          } .
-        ),
-        result: %(
-          (patch
-            (add ((triple _:b0 <http://a.example/p2> <http://a.example/o2>)
-                  (triple <http://a.example/s> <http://a.example/p> _:b0))))
-        )
-      },
     }.each do |name, params|
       it name do
         expect(params[:input]).to generate(params[:result])
