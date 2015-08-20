@@ -59,6 +59,14 @@ module LD::Patch::Algebra
 
       # Uses #[]= logic in RDF::List
       list[start, length] = collection
+      new_lh = list.subject
+
+      # If lh was rdf:nil, then we may have a new list head. Similarly, if the list was emptied, we now need to replace the head
+      if lh != new_lh
+        queryable.delete(RDF::Statement(var_or_iri, predicate, lh))
+        queryable.insert(RDF::Statement(var_or_iri, predicate, new_lh))
+      end
+
       queryable
     end
   end
