@@ -18,8 +18,7 @@ module LD::Patch::Algebra
     #   the graph or repository to write
     # @param  [Hash{Symbol => Object}] options
     #   any additional options
-    # @return [RDF::Queryable]
-    #   Returns queryable.
+    # @return [RDF::Query::Solutions] A single solution including passed bindings with `var` bound to the solution.
     # @raise [Error]
     #   If the subject and predicate provided to an UpdateList do not have a unique object, or if this object is not a well-formed collection.
     #   If an index in a slice expression is greater than the length of the rdf:List
@@ -67,7 +66,7 @@ module LD::Patch::Algebra
         queryable.insert(RDF::Statement(var_or_iri, predicate, new_lh))
       end
 
-      queryable
+      bindings
     end
   end
 end

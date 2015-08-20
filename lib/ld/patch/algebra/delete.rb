@@ -23,8 +23,7 @@ module LD::Patch::Algebra
     #   any additional options
     # @option options [Boolean] :existing
     #   Specifies that triples must already exist in the target graph
-    # @return [RDF::Queryable]
-    #   Returns queryable.
+    # @return [RDF::Query::Solutions] A single solution including passed bindings with `var` bound to the solution.
     # @raise [Error]
     #   If no triples are identified, or the operand is an unbound variable
     # @see    http://www.w3.org/TR/sparql11-update/
@@ -54,6 +53,7 @@ module LD::Patch::Algebra
       end
 
       queryable.delete(*triples)
+      bindings
     end
   end
 end

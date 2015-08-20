@@ -21,8 +21,7 @@ module LD::Patch::Algebra
     #   the graph or repository to write
     # @param  [Hash{Symbol => Object}] options
     #   any additional options
-    # @return [RDF::Queryable]
-    #   Returns queryable.
+    # @return [RDF::Query::Solutions] A single solution including passed bindings with `var` bound to the solution.
     # @raise [IOError]
     #   If no triples are identified, or the operand is an unbound variable
     # @see    http://www.w3.org/TR/sparql11-update/
@@ -45,7 +44,7 @@ module LD::Patch::Algebra
       queryable.query(object: var).each do |statement|
         queryable.delete(statement)
       end
-      queryable
+      bindings
     end
   end
 end
