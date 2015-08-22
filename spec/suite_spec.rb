@@ -36,17 +36,13 @@ describe LD::Patch do
                 end
               else
                 if t.evaluate?
-                  pending "negative evaluation tests"
                   operator.execute(t.target_graph)
-                  expect(t.target_graph).not_to be_equivalent_graph(t.expected_graph, t)
-                  fail
-                else
-                  fail("Should have raised a parser error")
                 end
+                fail("Should have raised a parser error")
               end
             rescue LD::Patch::Error
               # Special case
-              unless t.syntax? && t.negative_test?
+              unless t.negative_test?
                 raise
               end
             end

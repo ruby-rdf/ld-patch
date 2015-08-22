@@ -31,6 +31,7 @@ module LD::Patch::Algebra
 
       # Bind variables to path
       if var_or_iri.variable?
+        # FIXME 400 Bad Request
         raise LD::Patch::Error, "Operand uses unbound variable #{var_or_iri.inspect}" unless solution.bound?(var_or_iri)
         var_or_iri = solution[variable]
       end
@@ -54,7 +55,13 @@ module LD::Patch::Algebra
       when slice2 < 0 then list.length + slice2.to_i
       else slice2.to_i
       end
+
+      # FIXME 400 Bad Request
+      raise LD::Patch::Error, "UpdateList slice indexes out of order #{start}..#{finish}}" if finish < start
+      
       length = finish - start
+      raise LD::Patch::Error, "UpdateList out of bounds #{start}..#{finish}}" if start + length > list.length
+      raise LD::Patch::Error, "UpdateList out of bounds #{start}..#{finish}}" if start < 0
 
       # Uses #[]= logic in RDF::List
       list[start, length] = collection

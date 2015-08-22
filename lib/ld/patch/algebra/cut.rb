@@ -32,18 +32,25 @@ module LD::Patch::Algebra
       var = operand(0)
 
       # Bind variable
+      # FIXME 400 Bad Request
       raise LD::Patch::Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(var)
       var = solution[var]
 
+      cut_count = 0
       # Get triples to delete using consice bounded description
       queryable.concise_bounded_description(var) do |statement|
         queryable.delete(statement)
+        cut_count += 1
       end
 
       # Also delete triples having var in the object position
       queryable.query(object: var).each do |statement|
         queryable.delete(statement)
+        cut_count += 1
       end
+
+      raise LD::Patch::Error, "Cut removed no triples" unless cut_count > 0
+
       bindings
     end
   end

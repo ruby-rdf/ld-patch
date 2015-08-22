@@ -37,16 +37,18 @@ module LD::Patch::Algebra
         case var
         when RDF::Query::Pattern
           s = var.bind(solution)
+          # FIXME 400 Bad Request
           raise LD::Patch::Error, "Operand uses unbound pattern #{var.inspect}" if s.variable?
           s
         when RDF::Query::Variable
+          # FIXME 400 Bad Request
           raise LD::Patch::Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(var)
           solution[var]
         end
       end
 
       # If `:new` is specified, verify that no triple in triples exists in queryable
-      if options[:new]
+      if @options[:new]
         triples.each do |triple|
           raise LD::Patch::Error, "Target graph contains added triple #{triple.to_ntriples}" if queryable.has_statement?(triple)
         end

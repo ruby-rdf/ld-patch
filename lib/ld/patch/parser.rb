@@ -573,6 +573,7 @@ module LD::Patch
     end
 
     def ns(prefix, suffix)
+      # FIXME 400 Bad Request
       error("pname", "undefined prefix #{prefix.inspect}") unless prefix(prefix)
       base = prefix(prefix).to_s
       suffix = suffix.to_s.sub(/^\#/, "") if base.index("#")

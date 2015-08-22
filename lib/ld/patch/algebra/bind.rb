@@ -74,6 +74,7 @@ module LD::Patch::Algebra
 
       # Bind variables to path
       if value.variable?
+        # FIXME 400 Bad Request
         raise LD::Patch::Error, "Operand uses unbound variable #{value.inspect}" unless solution.bound?(value)
         value = solution[value]
       end
