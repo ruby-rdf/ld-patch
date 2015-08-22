@@ -60,7 +60,7 @@ module LD::Patch
       # Note that a Turtle Decimal may begin with a '.', so tack on a leading
       # zero if necessary
       value = token.value
-      #value = "0#{token.value}" if token.value[0,1] == "."
+      value = "0#{token.value}" if token.value[0,1] == "."
       input[:literal] = literal(value, datatype: RDF::XSD.decimal)
     end
     terminal(:INTEGER,              INTEGER) do |prod, token, input|
@@ -567,7 +567,7 @@ module LD::Patch
         RDF::URI(value)
       end
 
-      #iri.validate! if validate? && iri.respond_to?(:validate)
+      iri.validate! if validate? && iri.respond_to?(:validate)
       #iri = RDF::URI.intern(iri) if intern?
       iri
     end

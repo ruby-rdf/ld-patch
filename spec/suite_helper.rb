@@ -114,7 +114,7 @@ module Fixtures
       attr_accessor :debug
 
       def base
-        action.is_a?(Hash) && action.fetch("base", action["data"])
+        action.is_a?(Hash) ? action.fetch("base", action["data"]) : action
       end
 
       # Alias data and query

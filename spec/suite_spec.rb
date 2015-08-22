@@ -25,6 +25,7 @@ describe LD::Patch do
             begin
               operator = LD::Patch.parse(t.input,
                 base_uri: t.base,
+                validate: true,
                 debug:    t.debug
               )
               if t.positive_test?

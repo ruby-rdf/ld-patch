@@ -44,6 +44,7 @@ opts = GetoptLong.new(
   ["--progress", GetoptLong::NO_ARGUMENT],
   ["--sse", GetoptLong::NO_ARGUMENT],
   ["--to-sse", GetoptLong::NO_ARGUMENT],
+  ["--validate", GetoptLong::NO_ARGUMENT],
   ["--verbose", GetoptLong::NO_ARGUMENT],
   ["--help", "-?", GetoptLong::NO_ARGUMENT]
 )
@@ -62,6 +63,7 @@ opts.each do |opt, arg|
   when '--progress'      then options[:debug] ||= 2
   when '--sse'           then options[:sse] = true
   when '--to-sse'        then options[:to_sse] = true
+  when '--validate'      then options[:validate] = true
   when '--verbose'       then options[:verbose] = true
   when "--help"
     puts "Usage: #{$0} [options] file-or-uri ..."
