@@ -140,6 +140,18 @@ describe LD::Patch::Algebra do
         <http://example/#> <http://example.org/vocab#preferredLanguages> _:a .
       )
     },
+    "nested_collection" => {
+      data: %(<http://example.org/something> <http://example.org/completely> <http://example.org/different> .),
+      patch: %(Add {<http://a.example/s> <http://a.example/p> ((1)) .} .),
+      result: %(
+        <http://a.example/s> <http://a.example/p> _:outerEl1 .
+        _:outerEl1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> _:innerEl1 .
+        _:innerEl1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "1"^^<http://www.w3.org/2001/XMLSchema#integer> .
+        _:innerEl1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+        _:outerEl1 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+        <http://example.org/something> <http://example.org/completely> <http://example.org/different> .
+      )
+    }
   }.each do |name, props|
     it name do
       graph = RDF::Graph.new << RDF::NTriples::Reader.new(props[:data])

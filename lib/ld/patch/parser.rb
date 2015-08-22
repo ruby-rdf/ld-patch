@@ -231,6 +231,8 @@ module LD::Patch
 
         current[:resource] = current[:collection].subject
       end
+
+      (input[:triples] ||= []).concat(current[:triples]) if current[:triples]
       input[:subject] = current[:resource] || current[:iri]
     end
 
@@ -269,7 +271,7 @@ module LD::Patch
     end
     
     production(:blankNodePropertyList) do |input, current, callback|
-      input[:resource] = current[:subject]
+      input[:subject] = input[:resource] = current[:subject]
       (input[:triples] ||= []).concat(current[:triples]) if current[:triples]
     end
 
@@ -282,6 +284,7 @@ module LD::Patch
     production(:collection) do |input, current, callback|
       # Create an RDF list
       objects = current[:object_list]
+      (input[:triples] ||= []).concat(current[:triples]) if current[:triples]
       input[:collection] = RDF::List[*objects]
     end
 
@@ -545,7 +548,11 @@ module LD::Patch
           @options[:anon_base] = @options[:anon_base].succ
         end
         # Don't use provided ID to avoid aliasing issues when re-serializing the graph, when the bnode identifiers are re-used
-        (@bnode_cache ||= {})[id.to_s] ||= RDF::Node.new 
+        (@bnode_cache ||= {})[id.to_s] ||= begin
+          new_bnode = RDF::Node.new
+          new_bnode.lexical = "_:#{id}"
+          new_bnode
+        end
       end
     end
 
@@ -589,4 +596,14 @@ module LD::Patch
       RDF::Literal.new(value, options.merge(validate: validate?))
     end
   end
+end
+
+
+# Update RDF::Node to set lexical representation of BNode
+##
+# Extensions for RDF::URI
+class RDF::Node
+  # Original lexical value of this URI to allow for round-trip serialization.
+  def lexical=(value); @lexical = value; end
+  def lexical; @lexical; end
 end
