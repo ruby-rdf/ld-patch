@@ -17,7 +17,7 @@ describe LD::Patch do
       describe m.comment do
         m.entries.each do |t|
           next if t.approval =~ /Rejected/
-          specify "#{t.id.split("/").last}: #{t.name} - #{t.comment}#{'( negative)' if t.negative_test?}" do
+          specify "#{t.name} - #{t.comment}#{'( negative)' if t.negative_test?}" do
             if %w(turtle-syntax-bad-struct-09 turtle-syntax-bad-struct-10).include?(t.name)
               pending "Multiple '.' allowed in this grammar"
             end
@@ -41,9 +41,15 @@ describe LD::Patch do
                 end
                 fail("Should have raised a parser error")
               end
-            rescue LD::Patch::Error
+            rescue LD::Patch::ParserError
+              unless t.syntax? && t.negative_test? || %w(turtle-eval-bad-01 turtle-eval-bad-02 turtle-eval-bad-03).include?(t.name)
+                raise
+              end
+            rescue LD::Patch::Error => e
               # Special case
-              unless t.negative_test?
+              if t.evaluate? && t.negative_test?
+                expect(e.code).to eq t.statusCode.to_i
+              else
                 raise
               end
             end

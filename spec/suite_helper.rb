@@ -78,7 +78,8 @@ module Fixtures
         "result": {"@id": "mf:result", "@type": "@id"},
         "data": {"@id": "ldp:data", "@type": "@id"},
         "base": {"@id": "ldp:base", "@type": "@id"},
-        "patch": {"@id": "ldp:patch", "@type": "@id"}
+        "patch": {"@id": "ldp:patch", "@type": "@id"},
+        "statusCode": {"@id": "ldp:statusCode", "@type": "xsd:integer"}
       },
       "@type": "mf:Manifest",
       "entries": {

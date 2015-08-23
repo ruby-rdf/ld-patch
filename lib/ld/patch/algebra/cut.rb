@@ -32,8 +32,7 @@ module LD::Patch::Algebra
       var = operand(0)
 
       # Bind variable
-      # FIXME 400 Bad Request
-      raise LD::Patch::Error, "Operand uses unbound variable #{var.inspect}" unless solution.bound?(var)
+      raise LD::Patch::Error.new("Operand uses unbound variable #{var.inspect}", code: 400) unless solution.bound?(var)
       var = solution[var]
 
       cut_count = 0

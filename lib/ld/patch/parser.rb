@@ -47,7 +47,7 @@ module LD::Patch
       begin
         input[:iri] = iri(token.value[1..-2])
       rescue ArgumentError => e
-        raise Error, e.message
+        raise ParserError, e.message
       end
     end
     terminal(:DOUBLE,               DOUBLE) do |prod, token, input|
@@ -351,7 +351,7 @@ module LD::Patch
     def valid?
       parse
       true
-    rescue Error
+    rescue ParserError
       false
     end
 
@@ -416,7 +416,7 @@ module LD::Patch
       @result.validate! if @result && validate?
       @result
     rescue EBNF::LL1::Parser::Error, EBNF::LL1::Lexer::Error =>  e
-      raise LD::Patch::Error.new(e.message, lineno: e.lineno, token: e.token)
+      raise LD::Patch::ParserError.new(e.message, lineno: e.lineno, token: e.token)
     end
 
     ##
@@ -572,7 +572,6 @@ module LD::Patch
     end
 
     def ns(prefix, suffix)
-      # FIXME 400 Bad Request
       error("pname", "undefined prefix #{prefix.inspect}") unless prefix(prefix)
       base = prefix(prefix).to_s
       suffix = suffix.to_s.sub(/^\#/, "") if base.index("#")

@@ -30,6 +30,23 @@ module LD
     end
 
     class Error < StandardError
+      # The status code associated with this error
+      attr_reader :code
+
+      ##
+      # Initializes a new patch error instance.
+      #
+      # @param  [String, #to_s]          message
+      # @param  [Hash{Symbol => Object}] options
+      # @option options [Integer]        :code (422)
+      def initialize(message, options = {})
+        @code = options.fetch(:status_code, 422)
+        super(message.to_s)
+      end
+    end
+
+    # Indicates bad syntax found in LD Patch document
+    class ParserError < Error
       ##
       # The invalid token which triggered the error.
       #
@@ -41,17 +58,19 @@ module LD
       #
       # @return [Integer]
       attr_reader :lineno
+
       ##
-      # Initializes a new lexer error instance.
+      # Initializes a new parser error instance.
       #
       # @param  [String, #to_s]          message
       # @param  [Hash{Symbol => Object}] options
       # @option options [String]         :token  (nil)
       # @option options [Integer]        :lineno (nil)
+      # @option options [Integer]        :code (400)
       def initialize(message, options = {})
         @token      = options[:token]
         @lineno     = options[:lineno] || (@token.lineno if @token.respond_to?(:lineno))
-        super(message.to_s)
+        super(message.to_s, code: options.fetch(:code, 400))
       end
     end
   end
