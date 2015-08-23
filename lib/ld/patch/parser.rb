@@ -364,6 +364,7 @@ module LD::Patch
       @result.to_sxp
     end
 
+    alias_method :ll1_parse, :parse
     # Parse patch
     #
     # The result is an S-List. Productions return an array such as the following:
@@ -373,8 +374,6 @@ module LD::Patch
     # @param [Symbol, #to_s] prod The starting production for the parser.
     #   It may be a URI from the grammar, or a symbol representing the local_name portion of the grammar URI.
     # @return [Array]
-    alias_method :ll1_parse, :parse
-
     def parse(prod = START)
       ll1_parse(@input, prod.to_sym, @options.merge(branch: BRANCH,
                                                     first: FIRST,

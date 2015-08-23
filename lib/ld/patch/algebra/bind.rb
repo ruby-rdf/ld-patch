@@ -61,7 +61,7 @@ module LD::Patch::Algebra
     #   the graph or repository to write
     # @param  [Hash{Symbol => Object}] options
     #   any additional options
-    # @param [RDF::Query::Solutions] bindings
+    # @option options [RDF::Query::Solutions] :bindings
     # @return [RDF::Query::Solutions] A single solution including passed bindings with `var` bound to the solution.
     # @raise [Error]
     #   If path does not evaluate to a single term
