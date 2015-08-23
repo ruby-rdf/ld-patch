@@ -1,0 +1,8 @@
+---
+:format: :json
+:manifest:
+- https://raw.githubusercontent.com/pchampin/ld-patch-testsuite/master/manifest.ttl
+- https://raw.githubusercontent.com/pchampin/ld-patch-testsuite/master/manifest-syntax.ttl
+- https://raw.githubusercontent.com/pchampin/ld-patch-testsuite/master/turtle/manifest-ldpatch.ttl
+:bibRef: ! '[[LDPATCH]]'
+:name: Linked Data Patch Format
