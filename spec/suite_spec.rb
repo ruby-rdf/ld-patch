@@ -36,12 +36,10 @@ describe LD::Patch do
                   expect(operator).to be_a(SPARQL::Algebra::Operator)
                 end
               else
-                if t.evaluate?
-                  operator.execute(t.target_graph)
-                end
+                operator.execute(t.target_graph) if t.evaluate?
                 fail("Should have raised a parser error")
               end
-            rescue LD::Patch::ParserError
+            rescue LD::Patch::ParseError
               unless t.syntax? && t.negative_test? || %w(turtle-eval-bad-01 turtle-eval-bad-02 turtle-eval-bad-03).include?(t.name)
                 raise
               end

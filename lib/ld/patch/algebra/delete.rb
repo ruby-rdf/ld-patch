@@ -25,7 +25,7 @@ module LD::Patch::Algebra
     #   Specifies that triples must already exist in the target graph
     # @return [RDF::Query::Solutions] A single solution including passed bindings with `var` bound to the solution.
     # @raise [Error]
-    #   If no triples are identified, or the operand is an unbound variable
+    #   If `existing` is specified, and any triple is not found in the traget graph, or if unbound variables are used.
     # @see    http://www.w3.org/TR/sparql11-update/
     def execute(queryable, options = {})
       debug(options) {"Delete"}

@@ -47,7 +47,7 @@ module LD::Patch
       begin
         input[:iri] = iri(token.value[1..-2])
       rescue ArgumentError => e
-        raise ParserError, e.message
+        raise ParseError, e.message
       end
     end
     terminal(:DOUBLE,               DOUBLE) do |prod, token, input|
@@ -312,6 +312,10 @@ module LD::Patch
     #   Resolve prefix and relative IRIs, otherwise, when serializing the parsed SSE as S-Expressions, use the original prefixed and relative URIs along with `base` and `prefix` definitions.
     # @option options [Boolean]  :validate (false)
     #   whether to validate the parsed statements and values
+    # @option options [Array] :errors
+    #   array for placing errors found when parsing
+    # @option options [Array] :warnings
+    #   array for placing warnings found when parsing
     # @option options [Boolean] :progress
     #   Show progress of parser productions
     # @option options [Boolean] :debug
@@ -326,9 +330,10 @@ module LD::Patch
       end
       @input.encode!(Encoding::UTF_8) if @input.respond_to?(:encode!)
       @options = {anon_base: "b0", validate: false}.merge(options)
+      @errors = @options[:errors]
       @options[:debug] ||= case
       when options[:progress] then 2
-      when options[:validate] then 1
+      when options[:validate] then (@errors ? nil : 1)
       end
 
       debug("base IRI") {base_uri.inspect}
@@ -351,7 +356,7 @@ module LD::Patch
     def valid?
       parse
       true
-    rescue ParserError
+    rescue ParseError
       false
     end
 
@@ -364,6 +369,11 @@ module LD::Patch
       @result.to_sxp
     end
 
+    ##
+    # Accumulated errors found during processing
+    # @return [Array<String>]
+    attr_reader :errors
+
     alias_method :ll1_parse, :parse
     # Parse patch
     #
@@ -373,7 +383,8 @@ module LD::Patch
     #
     # @param [Symbol, #to_s] prod The starting production for the parser.
     #   It may be a URI from the grammar, or a symbol representing the local_name portion of the grammar URI.
-    # @return [Array]
+    # @return [SPARQL::Algebra::Operator, Array]
+    # @raise [ParseError] when illegal grammar detected.
     def parse(prod = START)
       ll1_parse(@input, prod.to_sym, @options.merge(branch: BRANCH,
                                                     first: FIRST,
@@ -386,15 +397,17 @@ module LD::Patch
           message = args.to_sse
           d_str = depth > 100 ? ' ' * 100 + '+' : ' ' * depth
           str = "[#{lineno}](#{level})#{d_str}#{message}".chop
-          @errors << str if @errors && level == 0
-          @warnings << str if @warnings && level == 1
-          case @options[:debug]
-          when Array
-            @options[:debug] << str
-          when TrueClass
-            $stderr.puts str
-          when Integer
-            $stderr.puts(str) if level <= @options[:debug]
+          if @errors && level == 0
+            @errors << str
+          else
+            case @options[:debug]
+            when Array
+              @options[:debug] << str
+            when TrueClass
+              $stderr.puts str
+            when Integer
+              $stderr.puts(str) if level <= @options[:debug]
+            end
           end
         end
       end
@@ -416,7 +429,7 @@ module LD::Patch
       @result.validate! if @result && validate?
       @result
     rescue EBNF::LL1::Parser::Error, EBNF::LL1::Lexer::Error =>  e
-      raise LD::Patch::ParserError.new(e.message, lineno: e.lineno, token: e.token)
+      raise LD::Patch::ParseError.new(e.message, lineno: e.lineno, token: e.token)
     end
 
     ##

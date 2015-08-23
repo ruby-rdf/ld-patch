@@ -21,7 +21,7 @@ module LD::Patch::Algebra
     # @return [RDF::Query::Solutions] A single solution including passed bindings with `var` bound to the solution.
     # @raise [Error]
     #   If the subject and predicate provided to an UpdateList do not have a unique object, or if this object is not a well-formed collection.
-    #   If an index in a slice expression is greater than the length of the rdf:List
+    #   If an index in a slice expression is greater than the length of the rdf:List or otherwise out of bound.
     # @see    http://www.w3.org/TR/sparql11-update/
     def execute(queryable, options = {})
       debug(options) {"UpdateList"}

@@ -64,7 +64,7 @@ module LD::Patch::Algebra
     # @option options [RDF::Query::Solutions] :bindings
     # @return [RDF::Query::Solutions] A single solution including passed bindings with `var` bound to the solution.
     # @raise [Error]
-    #   If path does not evaluate to a single term
+    #   If path does not evaluate to a single term or if unbound variables are used.
     # @see    http://www.w3.org/TR/sparql11-update/
     def execute(queryable, options = {})
       debug(options) {"Bind"}

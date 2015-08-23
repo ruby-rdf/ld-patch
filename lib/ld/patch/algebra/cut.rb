@@ -23,7 +23,7 @@ module LD::Patch::Algebra
     #   any additional options
     # @return [RDF::Query::Solutions] A single solution including passed bindings with `var` bound to the solution.
     # @raise [IOError]
-    #   If no triples are identified, or the operand is an unbound variable
+    #   If no triples are identified, or the operand is an unbound variable or the operand is an unbound variable.
     # @see    http://www.w3.org/TR/sparql11-update/
     def execute(queryable, options = {})
       debug(options) {"Cut"}

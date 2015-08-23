@@ -25,7 +25,7 @@ module LD::Patch::Algebra
     #   Specifies that triples may not already exist in the target graph
     # @return [RDF::Query::Solutions] A single solution including passed bindings with `var` bound to the solution.
     # @raise [Error]
-    #   If the :new option is specified and any triples already exist in queryable
+    #   If the :new option is specified and any triples already exist in queryable or if unbound variables are used
     # @see    http://www.w3.org/TR/sparql11-update/
     def execute(queryable, options = {})
       debug(options) {"Add"}

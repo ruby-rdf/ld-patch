@@ -1,14 +1,13 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require "bundler/setup"
-$:.unshift(File.expand_path(File.join(File.dirname(__FILE__), "..", 'lib')))
-$:.unshift(File.expand_path(File.join(File.dirname(__FILE__), "..", 'spec')))
+$:.unshift(File.expand_path("../../lib", __FILE__))
+$:.unshift(File.expand_path("../../spec", __FILE__))
 require 'rdf'
 require 'rdf/isomorphic'
 require 'rspec'
-require 'sparql'
-require File.expand_path(File.join(File.dirname(__FILE__), "..", 'spec', 'spec_helper'))
-require File.expand_path(File.join(File.dirname(__FILE__), "..", 'spec', 'dawg_helper'))
+require 'ld/patch'
+require 'suite_helper'
 require 'getoptlong'
 
 ASSERTOR = "http://greggkellogg.net/foaf#me"
@@ -17,7 +16,7 @@ RUN_TIME = Time.now
 def earl_preamble(options)
   options[:output].write File.read(File.expand_path("../../etc/doap.ttl", __FILE__))
   options[:output].puts %(
-<> foaf:primaryTopic <http://rubygems.org/gems/sparql> ;
+<> foaf:primaryTopic <http://rubygems.org/gems/ld-patch> ;
   dc:issued "#{RUN_TIME.xmlschema}"^^xsd:dateTime ;
   foaf:maker <#{ASSERTOR}> .
 
@@ -28,304 +27,112 @@ def earl_preamble(options)
 )
 end
 
-def run_tc(t, options = {})
-  options[:msg] ||= {}
-  options[:tests] ||= 0
-  options[:tests] += 1
-  stderr, $stderr = $stderr, StringIO.new unless options[:debug]
+def run_tc(t, options)
+  STDERR.write "run #{t.name}"
+  result = "untested"
 
-  STDERR.write "run #{t.name}" unless options[:quiet]
-
-  query = options[:sse] ? t.action.sse_string : t.action.query_string
-  result = nil
-  puts "\n" + query if options[:verbose]
-
-  puts t.inspect if options[:verbose]
-
-  puts t.action.sse_query_string if options[:verbose]
-
-  case t.name
-  when 'Basic - Term 6', 'Basic - Term 7', 'syntax-lit-08.rq'
-     # Decimal format changed in SPARQL 1.1
-    STDERR.write(options[:quiet] ? "." : " skipped\n")
-    result = "untested"
-  when 'syntax-esc-04.rq', 'syntax-esc-05.rq'
-    # PNAME_LN changed in SPARQL 1.1
-    STDERR.write(options[:quiet] ? "." : " skipped\n")
-    result = "untested"
-  when 'datatype-2 : Literals with a datatype'
-     # datatype now returns rdf:langString for language-tagged literals
-    STDERR.write(options[:quiet] ? "." : " skipped\n")
-    result = "untested"
-  when /REDUCED/
-     # REDUCED equivalent to DISTINCT
-    STDERR.write(options[:quiet] ? "." : " skipped\n")
-    result = "untested"
-  when /pp11|pp31/
-     # Expects multiple equivalent property path solutions
-    STDERR.write(options[:quiet] ? "." : " skipped\n")
-    result = "untested"
-  else
-
-    case t.type
-    when 'mf:QueryEvaluationTest'
-      t.graphs.each {|k, s| puts "#{k}:\n#{s.inspect}\n"} if options[:verbose]
-
-      actual = sparql_query(graphs: t.graphs, query: query, sse: !!options[:sse],
-                            base_uri: RDF::URI(t.action.query_file),
-                            form: t.form, to_hash: false)
-
-      options[:output].puts "expected: #{t.solutions.inspect}" if options[:verbose]
-      options[:output].puts "actual: #{actual.inspect}" if options[:verbose]
-
-      case t.form
-      when :select, :create, :describe, :construct
-        if actual.isomorphic_with?(t.solutions)
-          STDERR.write(options[:quiet] ? "." : " ok\n")
-          result = "passed"
-        else
-          options[:failures] ||= {}
-          options[:failures][t] = %{
-expected:\n#{t.solutions.inspect}
-actual:\n#{actual.inspect}
-  }
-          options[:failures][t] += "\nmissing:\n#{(t.solutions - actual).inspect}" unless (t.solutions - actual).empty?
-          options[:failures][t] += "\nextra:\n#{(t.solutions - actual).inspect}" unless (actual - t.solutions).empty?
-          STDERR.write(options[:quiet] ? "F" : (" failed" + options[:failures][t]))
-          result = "failed"
-        end
-      when :ask
-        if actual == t.solutions
-          STDERR.write(options[:quiet] ? "." : " ok\n")
-          result = "passed"
-        else
-          STDERR.write(options[:quiet] ? "F" : " failed\n")
-          options[:failures] ||= {}
-          options[:failures][t] = %{ expected: #{t.solutions.inspect}}
-          result = "failed"
-        end
+  begin
+    operator = LD::Patch.parse(t.input,
+      base_uri: t.base,
+      validate: true,
+      errors: []
+    )
+    if t.positive_test?
+      if t.evaluate?
+        ug = operator.execute(t.target_graph)
+        result = t.target_graph.isomorphic_with?(t.expected_graph) ? "passed" : "failed"
       else
-        STDERR.puts "unknown form #{t.form.inspect}"
-        exit(1)
-      end
-    when 'mf:CSVResultFormatTest'
-      actual = sparql_query(graphs: t.graphs,
-                            query: t.action.query_string,
-                            base_uri: RDF::URI(t.action.query_file),
-                            form: t.form)
-
-      STDERR.puts "expected: #{t.solutions.inspect}" if options[:verbose]
-      STDERR.puts "actual: #{actual.inspect}" if options[:verbose]
-
-      simplified_solutions = RDF::Query::Solutions.new
-      actual.each do |solution|
-        solution = solution.dup
-        actual.variable_names.each do |name|
-          value = solution[name] ||= RDF::Literal("")
-          solution[name] = RDF::Literal(value.to_s) if value.literal? && !value.simple?
-        end
-        simplified_solutions << solution
-      end
-
-      if simplified_solutions.isomorphic_with?(t.solutions)
-        STDERR.write(options[:quiet] ? "." : " ok\n")
-        result = "passed"
-      else
-        options[:failures] ||= {}
-        options[:failures][t] = %{
-expected:\n#{t.solutions.inspect}
-actual:\n#{actual.inspect}
-  }
-        options[:failures][t] += "\nmissing:\n#{(t.solutions - actual).inspect}" unless (t.solutions - actual).empty?
-        options[:failures][t] += "\nextra:\n#{(t.solutions - actual).inspect}" unless (actual - t.solutions).empty?
-        STDERR.write(options[:quiet] ? "F" : (" failed" + options[:failures][t]))
-        result = "failed"
-      end
-    when 'ut:UpdateEvaluationTest', 'mf:UpdateEvaluationTest'
-      # Load default and named graphs for result dataset
-      expected = RDF::Repository.new do |r|
-        t.result.graphs.each do |info|
-          data, format = info[:data], info[:format]
-          if data
-            RDF::Reader.for(format).new(data, info).each_statement do |st|
-              st.context = RDF::URI(info[:base_uri]) if info[:base_uri]
-              r << st
-            end
-          end
-        end
-      end
-
-      actual = sparql_query(graphs: t.action.graphs,
-                            query: t.action.query_string,
-                            base_uri: RDF::URI(t.action.query_file),
-                            form: t.form,
-                            debug: options[:debug])
-
-      STDERR.puts "expected: #{expected.dump(:trig)}" if options[:verbose]
-      STDERR.puts "actual: #{actual.dump(:trig)}" if options[:verbose]
-      if actual.isomorphic_with?(expected)
-        STDERR.write(options[:quiet] ? "." : " ok\n")
-        result = "passed"
-      else
-        options[:failures] ||= {}
-        options[:failures][t] = %{
-expected:\n#{expected.dump(:trig)}
-actual:\n#{actual.dump(:trig)}
-  }
-        STDERR.write(options[:quiet] ? "F" : (" failed" + options[:failures][t]))
-        result = "failed"
-      end
-    when 'mf:PositiveSyntaxTest', 'mf:PositiveSyntaxTest11'
-      SPARQL.parse(t.action.query_string, base_uri: t.base_uri, validate: true)
-      # No exception means it passes
-      STDERR.write(options[:quiet] ? "." : " ok\n")
-      result = "passed"
-    when 'mf:NegativeSyntaxTest', 'mf:NegativeSyntaxTest11'
-      begin
-        SPARQL.parse(t.action.query_string, base_uri: t.base_uri, validate: true)
-      rescue Exception => e
-        STDERR.puts e.message if options[:verbose]
-        STDERR.write(options[:quiet] ? "." : " ok\n")
-        result = "passed"
-      end
-      unless result == "passed"
-        options[:failures] ||= {}
-        options[:failures][t] = %{expected: Syntax Error}
-        STDERR.write(options[:quiet] ? "s" : (" failed" + options[:failures][t]))
-        result = "inapplicable"
-      end
-    when 'mf:PositiveUpdateSyntaxTest11'
-      SPARQL.parse(t.action.query_string, base_uri: t.base_uri, update: true, validate: true)
-      # No exception means it passes
-      STDERR.write(options[:quiet] ? "." : " ok\n")
-      result = "passed"
-    when 'mf:NegativeUpdateSyntaxTest11'
-      begin
-        SPARQL.parse(t.action.query_string, base_uri: t.base_uri, update: true, validate: true)
-      rescue Exception => e
-        STDERR.puts e.message if options[:verbose]
-        STDERR.write(options[:quiet] ? "." : " ok\n")
-        result = "passed"
-      end
-      unless result == "passed"
-        options[:failures] ||= {}
-        options[:failures][t] = %{expected: Syntax Error}
-        STDERR.write(options[:quiet] ? "s" : (" failed" + options[:failures][t]))
-        result = "inapplicable"
+        result = operator.is_a?(SPARQL::Algebra::Operator) ? "passed" : "failed"
       end
     else
-      STDERR.puts "unknown test type #{t.type}"
+      operator.execute(t.target_graph) if t.evaluate?
+      if %w(turtle-syntax-bad-struct-09 turtle-syntax-bad-struct-10).include?(t.name)
+        STDERR.puts "Multiple '.' allowed in this grammar" unless options[:quiet]
+        result = "inapplicable"
+      else
+        result = "failed"
+      end
+    end
+  rescue LD::Patch::ParseError => e
+    if %w(turtle-eval-bad-01 turtle-eval-bad-02 turtle-eval-bad-03).include?(t.name)
+      result = "passed"
+    elsif t.syntax? && t.negative_test?
+      result = "passed"
+    else
+      result = "failed"
+    end
+  rescue LD::Patch::Error => e
+    if t.evaluate? && t.negative_test?
+      result = e.code == t.statusCode.to_i ? "passed" : "failed"
+    else
+      result = "failed"
     end
   end
-rescue Interrupt
-  exit(1)
-rescue Exception => e
-  if options[:quiet]
-    STDOUT.write("E")
-    options[:exceptions] ||= {}
-    options[:exceptions][t] = e.message + $stderr.read
-  else
-    STDOUT.puts("\n#{e.message}")
-    STDOUT.puts e.backtrace
-    STDOUT.puts $stderr.read
-  end
-  $stderr = stderr unless options[:debug]
-  result = "failed"
-ensure
 
   if options[:earl]
+    test = t.id.sub("ldp:", Fixtures::SuiteTest::BASE + "manifest.ttl#")
     options[:output].puts %{
 [ a earl:Assertion;
   earl:assertedBy <#{ASSERTOR}>;
-  earl:subject <http://rubygems.org/gems/sparql>;
-  earl:test <#{t.attributes['id']}>;
+  earl:subject <http://rubygems.org/gems/ld-patch>;
+  earl:test <#{test}>;
   earl:result [
     a earl:TestResult;
     earl:outcome earl:#{result};
-    dc:name """#{t.name}""";
-} +
-if msg = options.fetch(:failures, {})[t] || options.fetch(:exceptions, {})[t]
-%{    dc:description """#{msg}""";
-}
-else
-  ""
-end +
-%{    dc:date "#{RUN_TIME.xmlschema}"^^xsd:dateTime];
+    dc:date "#{RUN_TIME.xmlschema}"^^xsd:dateTime];
   earl:mode earl:automatic ] .
 }
   end
+
+  STDERR.puts "#{"test result:" unless options[:quiet]} #{result}"
 end
 
 options = {
   output:   STDOUT,
-  quite:    false,
-  validate: false,
+  validate: true,
   verbose:  false,
 }
 suite = "rdfxml"
 opts = GetoptLong.new(
-  ["--earl", GetoptLong::NO_ARGUMENT],
   ["--debug", GetoptLong::NO_ARGUMENT],
+  ["--earl", GetoptLong::NO_ARGUMENT],
+  ["--help", "-?", GetoptLong::NO_ARGUMENT],
   ["--output", "-o", GetoptLong::REQUIRED_ARGUMENT],
-  ["--quiet", GetoptLong::NO_ARGUMENT],
-  ["--sse", GetoptLong::NO_ARGUMENT],
-  ["--verbose", GetoptLong::NO_ARGUMENT],
+  ["--quiet", "-q", GetoptLong::NO_ARGUMENT],
+  ["--verbose", "-v", GetoptLong::NO_ARGUMENT],
 )
+
+def help(options)
+  puts "Usage: #{$0} [options] [test-number ...]"
+  puts "Options:"
+  puts "      --debug:              Display detailed debug output"
+  puts "      --earl:               Generate EARL report"
+  puts "      --quiet:              Minimal output"
+  puts "      --output:             Output to specified file"
+  puts "      --verbose:            Verbose processing"
+  puts "      --help,-?:            This message"
+  exit(0)
+end
+
 opts.each do |opt, arg|
   case opt
   when '--earl'         then options[:quiet] = options[:earl] = true
   when '--debug'        then options[:debug] = true
   when '--output'       then options[:output] = File.open(arg, "w")
   when '--quiet'        then options[:quiet] = true
-  when '--sse'          then options[:sse] = true
-  when '--validate'     then options[:validate] = true
-  when '--verbose'      then options[:verbose] = true; ENV['PARSER_DEBUG'] = "2"
+  when '--verbose'      then options[:verbose] = true
   end
 end
 
 earl_preamble(options) if options[:earl]
 
-[SPARQL::Spec.sparql1_0_syntax_tests, SPARQL::Spec.sparql1_0_tests, SPARQL::Spec.sparql1_1_tests].each do |suite|
-  main_man = SPARQL::Spec::Manifest.open(suite)
-  main_man.include.reject do |m|
-    %w{
-      entailment
-      
-      csv-tsv-res
-      http-rdf-dupdate
-      protocol
-      service-description
-      service
-      syntax-fed
-    }.include?(m.attributes['id'].to_s.split('/')[-2])
-  end.each do |man|
-    puts ["Suite", man.attributes['rdfs:label'], man.attributes['rdfs:comment'], man.comment].compact.join(" - ") if options[:verbose] && ARGV.empty?
-    man.entries.each do |tc|
-      next unless tc.approved?
-      name = Array(tc.name).join("") + Array(tc.entry).join("")
-      next unless ARGV.empty? || ARGV.any? {|n| name.match(/#{n}/)}
+%w(manifest.ttl manifest-syntax.ttl turtle/manifest-ldpatch.ttl).each do |variant|
+  manifest = Fixtures::SuiteTest::BASE + variant
+
+  Fixtures::SuiteTest::Manifest.open(manifest) do |m|
+    m.entries.each do |tc|
+      next unless ARGV.empty? || ARGV.any? {|n| tc.name.match(/#{n}/)}
       run_tc(tc, options)
     end
   end
-end
-
-if options[:quiet]
-  puts ""
-  if options[:exceptions]
-    puts "\nExceptions:"
-    options[:exceptions].each do |t, m|
-      puts "#{t.name}: #{m}\n"
-    end
-  end
-  if options[:failures]
-    puts "\nFailures"
-    options[:failures].each do |t, m|
-      puts "#{t.name}:#{m}\n"
-    end
-  end
-
-  msg = "#{options[:tests]} Tests"
-  msg += ", #{options[:failures].length} Failures" if options[:failures]
-  msg += ", #{options[:exceptions].length} Exceptions" if options[:exceptions]
-  puts msg
 end

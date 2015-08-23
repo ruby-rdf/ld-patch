@@ -46,7 +46,7 @@ module LD
     end
 
     # Indicates bad syntax found in LD Patch document
-    class ParserError < Error
+    class ParseError < Error
       ##
       # The invalid token which triggered the error.
       #
