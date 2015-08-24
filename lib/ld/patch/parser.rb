@@ -383,7 +383,7 @@ module LD::Patch
     #
     # @param [Symbol, #to_s] prod The starting production for the parser.
     #   It may be a URI from the grammar, or a symbol representing the local_name portion of the grammar URI.
-    # @return [SPARQL::Algebra::Operator, Array]
+    # @return [SPARQL::Algebra::Operator, Object]
     # @raise [ParseError] when illegal grammar detected.
     def parse(prod = START)
       ll1_parse(@input, prod.to_sym, @options.merge(branch: BRANCH,

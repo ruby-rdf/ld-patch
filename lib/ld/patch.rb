@@ -23,8 +23,10 @@ module LD
     #
     # @param  [IO, StringIO, String, #to_s]  input
     # @param  [Hash{Symbol => Object}] options
-    # @return [Object]
-    #   The parsed Patch
+    # @option options [#to_s]    :base_uri     (nil)
+    #   the base URI to use when resolving relative URIs
+    # @option (see LD::Patch::Parser#initialize)
+    # @return [SPARQL::Algebra::Operator] The executable parsed Patch
     def self.parse(input, options = {})
       LD::Patch::Parser.new(input, options).parse
     end

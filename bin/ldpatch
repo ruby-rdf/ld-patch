@@ -10,82 +10,72 @@ rescue LoadError
 end
 require 'getoptlong'
 
-def run(input, options = {})
+def run(graph, options = {})
   if options[:debug]
-    puts "input graph:\n#{options[:graph].dump(:ttl, standard_prefixes: true)}\n" if options[:graph]
-    puts "query:\n#{input}\n"
+    puts "target graph:\n#{graph.dump(:ttl, standard_prefixes: true)}\n"
+    puts "patch:\n#{options[:patch]}\n"
   end
-  options[:graph] ||= RDF::Graph.new
 
   if options[:verbose]
-    puts ("\nPATCH:\n" + input) 
+    puts ("\npatch:\n" + options[:patch]) 
   end
 
-  patch = if options[:sse]
-    SPARQL::Algebra.parse(input, options)
-  else
-    # Only do grammar debugging if we're generating SSE
-    LD::Patch.parse(input, options)
-  end
+  patch =  LD::Patch.parse(options[:patch], options)
 
   puts ("\nSSE:\n" + patch.to_sse) if options[:debug] || options[:to_sse]
 
   unless options[:to_sse]
-    res = patch.execute(options[:graph], debug: options[:debug])
-    puts res.inspect if options[:verbose]
+    res = patch.execute(graph, options)
     puts res.dump(:ttl, base_uri: patch.base_uri, prefixes: patch.prefixes, standard_prefixes: true)
   end
 end
 
 opts = GetoptLong.new(
   ["--debug", GetoptLong::NO_ARGUMENT],
-  ["--dump", GetoptLong::NO_ARGUMENT],
   ["--execute", "-e", GetoptLong::REQUIRED_ARGUMENT],
+  ["--patch", GetoptLong::REQUIRED_ARGUMENT],
   ["--progress", GetoptLong::NO_ARGUMENT],
-  ["--sse", GetoptLong::NO_ARGUMENT],
   ["--to-sse", GetoptLong::NO_ARGUMENT],
   ["--validate", GetoptLong::NO_ARGUMENT],
   ["--verbose", GetoptLong::NO_ARGUMENT],
   ["--help", "-?", GetoptLong::NO_ARGUMENT]
 )
 
-options = {
-  graph: RDF::Repository.new,
-}
-
-input = nil
+options = {}
 
 opts.each do |opt, arg|
   case opt
-  when '--debug'         then options[:debug] = true
-  when '--dump'          then $dump = true
-  when '--execute'       then input = arg
-  when '--progress'      then options[:debug] ||= 2
-  when '--sse'           then options[:sse] = true
-  when '--to-sse'        then options[:to_sse] = true
-  when '--validate'      then options[:validate] = true
-  when '--verbose'       then options[:verbose] = true
+  when '--base'         then options[:base_uri] = arg
+  when '--debug'        then options[:debug] = true
+  when '--execute'      then options[:patch] = arg
+  when '--patch'        then options[:patch] = RDF::Util::File.open_file(arg).read
+  when '--progress'     then options[:debug] ||= 2
+  when '--to-sse'       then options[:to_sse] = true
+  when '--validate'     then options[:validate] = true
+  when '--verbose'      then options[:verbose] = true
   when "--help"
-    puts "Usage: #{$0} [options] file-or-uri ..."
+    puts "Usage: #{$0} [options] target graph file-or-uri ..."
     puts "Options:"
-    puts "      --execute,-e:         Use option argument as the SPARQL input if no files are given"
-    puts "      --dump:               Dump raw output, otherwise serialize to SSE"
-    puts "      --debug:              Display detailed debug output"
-    puts "      --sse:                Input is in SSE format"
-    puts "      --to-sse:             Generate SSE instead of running query"
-    puts "      --verbose:            Display details of processing"
-    puts "      --help,-?:            This message"
+    puts "      --base:       Base URI of target graph, if different from graph location"
+    puts "      --debug:      Display detailed debug output"
+    puts "      --execute,-e: Use option argument as the patch input"
+    puts "      --patch:      Location of patch document"
+    puts "      --progress    Display parse tree"
+    puts "      --to-sse:     Generate SSE for patch instead of running query"
+    puts "      --validate:   Validate patch document"
+    puts "      --verbose:    Display details of processing"
+    puts "      --help,-?:    This message"
     exit(0)
   end
 end
 
+raise "No patch defined" unless options[:patch]
 if ARGV.empty?
-  s = input ? input : $stdin.read
-  run(s, options)
+  run(RDF::Graph.new, options)
 else
   ARGV.each do |test_file|
-    puts "parse #{test_file}"
-    run(RDF::Util::File.open_file(test_file).read, options.merge(base_uri: RDF::URI(test_file)))
+    puts "patch #{test_file}"
+    run(RDF::Graph.load(test_file), options.merge(base_uri: RDF::URI(test_file)))
   end
 end
 puts

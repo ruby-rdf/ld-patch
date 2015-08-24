@@ -29,6 +29,30 @@ This gem implements the [LD Patch][] specification with a couple of changes and/
 ## Documentation
 Full documentation available on [Rubydoc.info][LD-Patch doc]
 
+## Examples
+
+    require 'rubygems'
+    require 'ld/patch'
+
+### Example Patch
+
+    queryable = RDF::Repository.load("etc/doap.ttl")
+    patch = %(
+      @prefix doap: <http://usefulinc.com/ns/doap#> .
+      @prefix earl: <http://www.w3.org/ns/earl#> .
+      @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+      Delete { <> a earl:TestSubject, earl:Software } .
+      Add {
+        <http://greggkellogg.net/foaf#me> a foaf:Person;
+          foaf:name "Gregg Kellogg"
+      } .
+      Bind ?ruby <> / doap:programming-language .
+      Cut ?ruby .
+    )
+    operator = LD::Patch.parse(patch, base_uri: "http://rubygems.org/gems/ld-patch")
+    operator.execute(queryable) # alternatively queryable.query(operator)
+
 ## Implementation Notes
 The reader uses the [EBNF][] gem to generate first, follow and branch tables, and uses the `Parser` and `Lexer` modules to implement the LD Patch parser.
 
