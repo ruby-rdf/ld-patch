@@ -26,17 +26,17 @@ describe LD::Patch::Algebra do
     _:bpb <http://example.org/l> "b" .
   )
   EXAMPLE_4 = %(
-    _:g70253998307400 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "lorem" .
-    _:g70253998307400 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70253998308700 .
-    _:g70253998308700 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "ipsum" .
-    _:g70253998308700 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70253998317740 .
-    _:g70253998317740 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "dolor" .
-    _:g70253998317740 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70253998318780 .
-    _:g70253998318780 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "sit" .
-    _:g70253998318780 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:g70253998319960 .
-    _:g70253998319960 <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "amet" .
-    _:g70253998319960 <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-    <http://example.org/#> <http://example.org/vocab#preferredLanguages> _:g70253998307400 .
+    _:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "lorem" .
+    _:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b .
+    _:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "ipsum" .
+    _:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:c .
+    _:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "dolor" .
+    _:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:d .
+    _:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "sit" .
+    _:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:e .
+    _:e <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "amet" .
+    _:e <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+    <http://example.org/#> <http://example.org/vocab#preferredLanguages> _:a .
   )
 
   describe "positive evaluation" do
@@ -126,21 +126,9 @@ describe LD::Patch::Algebra do
         )
       },
       "updatelist" => {
-        data: %(
-          _:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "lorem" .
-          _:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b .
-          _:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "ipsum" .
-          _:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:c .
-          _:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "dolor" .
-          _:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:d .
-          _:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "sit" .
-          _:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:e .
-          _:e <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "amet" .
-          _:e <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-          <http://example/#> <http://example.org/vocab#preferredLanguages> _:a .
-        ),
+        data: EXAMPLE_4,
         patch: %(
-          UpdateList <http://example/#> <http://example.org/vocab#preferredLanguages> 1..3 ( "IPSUM DOLOR" ) .
+          UpdateList <http://example.org/#> <http://example.org/vocab#preferredLanguages> 1..3 ( "IPSUM DOLOR" ) .
         ),
         result: %(
           _:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "lorem" .
@@ -151,7 +139,46 @@ describe LD::Patch::Algebra do
           _:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:d .
           _:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "amet" .
           _:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
-          <http://example/#> <http://example.org/vocab#preferredLanguages> _:a .
+          <http://example.org/#> <http://example.org/vocab#preferredLanguages> _:a .
+        )
+      },
+      "updatelist-var" => {
+        data: EXAMPLE_4,
+        patch: %(
+          Bind ?var <http://example.org/#> .
+          UpdateList ?var <http://example.org/vocab#preferredLanguages> 1..3 ( "IPSUM DOLOR" ) .
+        ),
+        result: %(
+          _:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "lorem" .
+          _:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b .
+          _:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "IPSUM DOLOR" .
+          _:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:c .
+          _:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "sit" .
+          _:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:d .
+          _:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "amet" .
+          _:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+          <http://example.org/#> <http://example.org/vocab#preferredLanguages> _:a .
+        )
+      },
+      "updatelist-empty-slice" => {
+        data: EXAMPLE_4,
+        patch: %(
+          UpdateList <http://example.org/#> <http://example.org/vocab#preferredLanguages> .. ( "IPSUM DOLOR" ) .
+        ),
+        result: %(
+        _:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "lorem" .
+        _:a <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:b .
+        _:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "ipsum" .
+        _:b <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:c .
+        _:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "dolor" .
+        _:c <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:d .
+        _:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "sit" .
+        _:d <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:e .
+        _:e <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "amet" .
+        _:e <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> _:f .
+        _:f <http://www.w3.org/1999/02/22-rdf-syntax-ns#first> "IPSUM DOLOR" .
+        _:f <http://www.w3.org/1999/02/22-rdf-syntax-ns#rest> <http://www.w3.org/1999/02/22-rdf-syntax-ns#nil> .
+        <http://example.org/#> <http://example.org/vocab#preferredLanguages> _:a .
         )
       },
       "nested_collection" => {

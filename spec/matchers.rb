@@ -62,19 +62,6 @@ RSpec::Matchers.define :be_equivalent_graph do |expected, info|
   end  
 end
 
-RSpec::Matchers.define :produce do |expected, info|
-  match do |actual|
-    expect(actual).to eq expected
-  end
-  
-  failure_message do |actual|
-    "Expected: #{[Array, Hash].include?(expected.class) ? expected.to_json(JSON_STATE) : expected.inspect}\n" +
-    "Actual  : #{[Array, Hash].include?(actual.class) ? actual.to_json(JSON_STATE) : actual.inspect}\n" +
-    #(expected.is_a?(Hash) && actual.is_a?(Hash) ? "Diff: #{expected.diff(actual).to_json(JSON_STATE)}\n" : "") +
-    "Processing results:\n#{info.join("\n")}"
-  end
-end
-
 RSpec::Matchers.define :generate do |expected, options = {}|
   def parser(options = {})
     @debug = options[:progress] ? 2 : []
@@ -97,7 +84,7 @@ RSpec::Matchers.define :generate do |expected, options = {}|
 
   match do |input|
     case
-    when expected == EBNF::LL1::Parser::Error
+    when expected == LD::Patch::ParseError
       expect {parser(options).call(input)}.to raise_error(expected)
     when expected.is_a?(String)
       @actual = parser(options).call(input)

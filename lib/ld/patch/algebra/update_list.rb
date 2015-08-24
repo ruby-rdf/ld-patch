@@ -32,7 +32,7 @@ module LD::Patch::Algebra
       # Bind variables to path
       if var_or_iri.variable?
         raise LD::Patch::Error("Operand uses unbound variable #{var_or_iri.inspect}", code: 400) unless solution.bound?(var_or_iri)
-        var_or_iri = solution[variable]
+        var_or_iri = solution[var_or_iri]
       end
 
       list_heads = queryable.query(subject: var_or_iri, predicate: predicate).map {|s| s.object}

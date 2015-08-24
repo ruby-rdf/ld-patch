@@ -1,6 +1,15 @@
 $:.unshift File.expand_path("../..", __FILE__)
 require 'spec_helper'
 
+describe LD::Patch do
+  describe ".parse" do
+    specify do
+      input = %(Add { <http://example.org/s2> <http://example.org/p2> <http://example.org/o2> } .)
+      expect(described_class.parse(input)).to be_a(SPARQL::Algebra::Operator)
+    end
+  end
+end
+
 describe LD::Patch::Parser do
   before(:each) {$stderr = StringIO.new}
   after(:each) {$stderr = STDERR}
@@ -270,9 +279,19 @@ describe LD::Patch::Parser do
     end
   end
 
-  def parse(input, options = {})
-    production = options.fetch(:production, :ldpatch)
-    @debug = options[:debug] || []
-    described_class.new(input, {debug: @debug, resolve_iris: false}.merge(options)).parse(production)
+  describe "NegativeSyntax" do
+    {
+      "s_bad_a_empty_graph.v" => {
+        input: %(
+          @prefix THIS_FILE_WAS_GENERATED__DO_NOT_CHANGE_IT: <>.
+          A {}.
+        ),
+        result: LD::Patch::ParseError
+      },
+    }.each do |name, params|
+      it name do
+        expect(params[:input]).to generate(params[:result])
+      end
+    end
   end
 end
