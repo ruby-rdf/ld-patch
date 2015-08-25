@@ -86,6 +86,9 @@ RSpec::Matchers.define :generate do |expected, options = {}|
     case
     when expected == LD::Patch::ParseError
       expect {parser(options).call(input)}.to raise_error(expected)
+    when expected.is_a?(Regexp)
+      @actual = parser(options).call(input)
+      expect(normalize(@actual.to_sxp)).to match(expected)
     when expected.is_a?(String)
       @actual = parser(options).call(input)
       expect(normalize(@actual.to_sxp)).to eq normalize(expected)

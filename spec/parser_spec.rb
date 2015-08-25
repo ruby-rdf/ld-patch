@@ -272,6 +272,36 @@ describe LD::Patch::Parser do
           )
         )
       },
+      "anonymous_blank_node_subject" => {
+        input: %(Add {[] <http://a.example/p> <http://a.example/o> .} .),
+        result: //
+      },
+      "labeled_blank_node_subject" => {
+        input: %(Add {_:s <http://a.example/p> <http://a.example/o> .} .),
+        result: //
+      },
+      "literals" => {
+        input: %(Add {
+          <http://a.example/s> <http://a.example/p>
+            "a", 'b', """c""", '''d''',
+            "en"@en,
+            1.1, 2.2e2,
+            true, false .} .
+        ),
+        result: //
+      },
+      "list" => {
+        input: %(Add {('a' ('b')) <http://a.example/p> (1 (2)) .} .),
+        result: //
+      },
+      "blankNodePropertyList" => {
+        input: %(
+          Add {
+            [<http://a.example/p> <http://a.example/o>]
+            <http://a.example/p2> <http://a.example/o2> .} .
+        ),
+        result: //
+      }
     }.each do |name, params|
       it name do
         expect(params[:input]).to generate(params[:result])
