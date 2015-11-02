@@ -9,6 +9,10 @@ module RDF::Util
     REMOTE_PATH = "https://raw.githubusercontent.com/pchampin/ld-patch-testsuite/master/"
     LOCAL_PATH = ::File.expand_path("../testsuite", __FILE__) + '/'
 
+    class << self
+      alias_method :original_open_file, :open_file
+    end
+
     ##
     # Override to use Patron for http and https, Kernel.open otherwise.
     #
@@ -19,42 +23,56 @@ module RDF::Util
     # @return [IO] File stream
     # @yield [IO] File stream
     def self.open_file(filename_or_url, options = {}, &block)
-      case filename_or_url.to_s
-      when /^file:/
+      case
+      when filename_or_url.to_s =~ /^file:/
         path = filename_or_url[5..-1]
         Kernel.open(path.to_s, options, &block)
-      when /^#{REMOTE_PATH}/
-        begin
-          #puts "attempt to open #{filename_or_url} locally"
-          local_filename = filename_or_url.to_s.sub(REMOTE_PATH, LOCAL_PATH)
-          if ::File.exist?(local_filename)
-            response = ::File.open(local_filename)
-            #puts "use #{filename_or_url} locally"
-            case filename_or_url.to_s
-            when /\.ttl$/
-              def response.content_type; 'text/turtle'; end
-            when /\.ldpatch$/
-              def response.content_type; 'text/ldpatch'; end
-            end
+      when (filename_or_url.to_s =~ %r{^#{REMOTE_PATH}} && Dir.exist?(LOCAL_PATH))
+        localpath = RDF::URI(filename_or_url).dup
+        localpath.query = nil
+        localpath = localpath.to_s.sub(REMOTE_PATH, LOCAL_PATH)
+        response = begin
+          ::File.open(localpath)
+        rescue Errno::ENOENT => e
+          raise IOError, e.message
+        end
+        document_options = {
+          base_uri:     RDF::URI(filename_or_url),
+          charset:      Encoding::UTF_8,
+          code:         200,
+          headers:      {}
+        }
+        #puts "use #{filename_or_url} locally"
+        document_options[:headers][:content_type] = case filename_or_url.to_s
+        when /\.ttl$/     then 'text/turtle'
+        when /\.ldpatch$/ then 'text/ldpatch'
+        else                  'unknown'
+        end
 
-            if block_given?
-              begin
-                yield response
-              ensure
-                response.close
-              end
-            else
-              response
-            end
-          else
-            Kernel.open(filename_or_url.to_s, options.fetch(:headers, {}), &block)
-          end
-        rescue Errno::ENOENT #, OpenURI::HTTPError
-          # Not there, don't run tests
-          StringIO.new("")
+        document_options[:headers][:content_type] = response.content_type if response.respond_to?(:content_type)
+        # For overriding content type from test data
+        document_options[:headers][:content_type] = options[:contentType] if options[:contentType]
+
+        remote_document = RDF::Util::File::RemoteDocument.new(response.read, document_options)
+        if block_given?
+          yield remote_document
+        else
+          remote_document
         end
       else
-        Kernel.open(filename_or_url.to_s, options.fetch(:headers, {}), &block)
+        original_open_file(filename_or_url, options) do |rd|
+          # Override content_type
+          if options[:contentType]
+            rd.headers[:content_type] = options[:contentType]
+            rd.instance_variable_set(:@content_type, options[:contentType].split(';').first)
+          end
+
+          if block_given?
+            yield rd
+          else
+            rd
+          end
+        end
       end
     end
   end

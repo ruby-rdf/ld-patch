@@ -84,13 +84,16 @@ def run_tc(t, options)
 }
   end
 
+  options[:result_count][result] ||= 0
+  options[:result_count][result] += 1
+
   STDERR.puts "#{"test result:" unless options[:quiet]} #{result}"
 end
 
 options = {
-  output:   STDOUT,
-  validate: true,
-  verbose:  false,
+  output:       STDOUT,
+  validate:     true,
+  verbose:      false,
 }
 suite = "rdfxml"
 opts = GetoptLong.new(
@@ -125,6 +128,7 @@ opts.each do |opt, arg|
 end
 
 earl_preamble(options) if options[:earl]
+result_count = {}
 
 %w(manifest.ttl manifest-syntax.ttl turtle/manifest-ldpatch.ttl).each do |variant|
   manifest = Fixtures::SuiteTest::BASE + variant
@@ -132,7 +136,11 @@ earl_preamble(options) if options[:earl]
   Fixtures::SuiteTest::Manifest.open(manifest) do |m|
     m.entries.each do |tc|
       next unless ARGV.empty? || ARGV.any? {|n| tc.name.match(/#{n}/)}
-      run_tc(tc, options)
+      run_tc(tc, options.merge(result_count: result_count))
     end
   end
+end
+
+result_count.each do |result, count|
+  puts "#{result}: #{count}"
 end
