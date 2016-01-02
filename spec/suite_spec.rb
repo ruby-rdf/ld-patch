@@ -21,6 +21,9 @@ describe LD::Patch do
             if %w(turtle-syntax-bad-struct-09 turtle-syntax-bad-struct-10).include?(t.name)
               pending "Multiple '.' allowed in this grammar"
             end
+            if %w(localName_with_assigned_nfc_PN_CHARS_BASE_character_boundaries localName_with_assigned_nfc_PN_CHARS_BASE_character_boundaries__reverted).include?(t.name)
+              pending "I18N URI valid syntax but not URI"
+            end
             t.debug = []
             begin
               operator = LD::Patch.parse(t.input,

@@ -24,20 +24,20 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version      = '>= 2.0.0'
   gem.requirements               = []
-  gem.add_runtime_dependency     'rdf',               '~> 1.1', '>= 1.1.15'
+  gem.add_runtime_dependency     'rdf',               '~> 1.99'
   gem.add_runtime_dependency     'ebnf',              '~> 1.0'
-  gem.add_runtime_dependency     'sparql',            '~> 1.1', '>= 1.1.7'
+  gem.add_runtime_dependency     'sparql',            '~> 1.99'
   gem.add_runtime_dependency     'sxp',               '~> 0.1'
-  gem.add_runtime_dependency     'rdf-xsd',           '~> 1.1'
+  gem.add_runtime_dependency     'rdf-xsd',           '~> 1.99'
 
   gem.add_development_dependency 'rack',              '~> 1.6'
-  gem.add_development_dependency 'linkeddata',        '~> 1.1'
-  gem.add_development_dependency 'rdf-spec',          '~> 1.1'
+  gem.add_development_dependency 'linkeddata',        '~> 1.99'
+  gem.add_development_dependency 'rdf-spec',          '~> 1.99'
   gem.add_development_dependency 'open-uri-cached',   '~> 0.0', '>= 0.0.5'
-  gem.add_development_dependency 'rspec',             '~> 3.2'
+  gem.add_development_dependency 'rspec',             '~> 3.4'
   gem.add_development_dependency 'rspec-its',         '~> 1.2'
   gem.add_development_dependency 'yard' ,             '~> 0.8'
-  gem.add_development_dependency 'webmock',           '~> 1.17'
+  gem.add_development_dependency 'webmock',           '~> 1.22'
 
   gem.post_install_message       = nil
 end

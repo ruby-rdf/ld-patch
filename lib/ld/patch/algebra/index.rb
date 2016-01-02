@@ -24,7 +24,7 @@ module LD::Patch::Algebra
       index = operand(0)
 
       results = terms.map do |term|
-        list = RDF::List.new(term, queryable)
+        list = RDF::List.new(subject: term, graph: queryable)
         list.at(index.to_i)
       end.flatten
 
