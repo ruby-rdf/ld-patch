@@ -11,6 +11,7 @@ group :debug do
 end
 
 group :development, :test do
+  gem 'rdf-spec',       git: "git://github.com/ruby-rdf/rdf-spec.git", branch: "develop"
   gem "rdf-vocab",      git: "git://github.com/ruby-rdf/rdf-vocab.git", branch: "develop"
   gem 'rdf-turtle',     git: "git://github.com/ruby-rdf/rdf-turtle.git", branch: "develop"
   gem 'rest-client-components'

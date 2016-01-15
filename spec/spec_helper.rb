@@ -1,5 +1,7 @@
 require "bundler/setup"
 require 'rspec/its'
+require 'rdf/spec'
+require 'rdf/spec/matchers'
 require 'matchers'
 require 'webmock/rspec'
 require 'rdf/turtle'
