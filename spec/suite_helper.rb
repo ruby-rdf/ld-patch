@@ -177,6 +177,15 @@ module Fixtures
         !positive_test?
       end
 
+      # Create a logger initialized with the content of `debug`
+      def logger
+        @logger ||= begin
+          l = RDF::Spec.logger
+          debug.each {|d| l.debug(d)}
+          l
+        end
+      end
+
       def inspect
         super.sub('>', "\n" +
         "  syntax?: #{syntax?.inspect}\n" +
