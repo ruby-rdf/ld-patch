@@ -150,7 +150,7 @@ module Fixtures
       end
 
       def target_graph
-        @graph ||= RDF::Graph.load(URI.decode(data), base_uri: base)
+        @graph ||= RDF::Repository.load(URI.decode(data), base_uri: base)
       end
 
       def expected
@@ -158,7 +158,7 @@ module Fixtures
       end
 
       def expected_graph
-        @expected_graph ||= RDF::Graph.load(URI.decode(result), base_uri: base)
+        @expected_graph ||= RDF::Repository.load(URI.decode(result), base_uri: base)
       end
 
       def evaluate?

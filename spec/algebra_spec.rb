@@ -418,9 +418,9 @@ describe LD::Patch::Algebra do
       },
     }.each do |name, props|
       it name do
-        graph = RDF::Graph.new << RDF::NTriples::Reader.new(props[:data])
+        graph = RDF::Repository.new << RDF::NTriples::Reader.new(props[:data])
         operator = LD::Patch::Parser.new(props[:patch]).parse
-        result = RDF::Graph.new << RDF::NTriples::Reader.new(props[:result])
+        result = RDF::Repository.new << RDF::NTriples::Reader.new(props[:result])
         operator.execute(graph)
         expect(graph).to be_equivalent_graph(result)
       end
@@ -469,7 +469,7 @@ describe LD::Patch::Algebra do
       },
     }.each do |name, props|
       it name do
-        graph = RDF::Graph.new << RDF::NTriples::Reader.new(props[:data])
+        graph = RDF::Repository.new << RDF::NTriples::Reader.new(props[:data])
         operator = LD::Patch::Parser.new(props[:patch]).parse
         expect {operator.execute(graph)}.to raise_error(LD::Patch::Error)
       end
