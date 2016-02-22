@@ -261,7 +261,7 @@ module LD::Patch
       else
         debug("object") {"current: #{current.inspect}"}
         object = current[:resource] || current[:literal] || current[:iri]
-        (input[:triples] ||= []) << RDF::Query::Pattern.new(input[:subject], input[:predicate], object)
+        (input[:triples] ||= []) << RDF::Query::Pattern.new(subject: input[:subject], predicate: input[:predicate], object: object)
       end
     end
 

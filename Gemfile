@@ -2,15 +2,26 @@ source "http://rubygems.org"
 
 gemspec
 
-gem 'rdf', git: "git://github.com/ruby-rdf/rdf.git", branch: "develop"
-gem 'ebnf', git: "git://github.com/gkellogg/ebnf.git", branch: "develop"
+gem 'rdf',  github: "ruby-rdf/rdf",  branch: "develop"
+gem 'ebnf', github: "gkellogg/ebnf", branch: "develop"
 
-group :development do
+group :debug do
   gem "wirble"
-  gem "byebug", platforms: :mri_21
+  gem "byebug", platforms: :mri
 end
 
 group :development, :test do
+  gem 'json-ld',            github: "ruby-rdf/json-ld",             branch: "develop"
+  gem 'rdf-aggregate-repo', github: "ruby-rdf/rdf-aggregate-repo",  branch: "develop"
+  gem 'rdf-isomorphic',     github: "ruby-rdf/rdf-isomorphic",      branch: "develop"
+  gem 'rdf-spec',           github: "ruby-rdf/rdf-spec",            branch: "develop"
+  gem "rdf-vocab",          github: "ruby-rdf/rdf-vocab",           branch: "develop"
+  gem 'rdf-turtle',         github: "ruby-rdf/rdf-turtle",          branch: "develop"
+  gem 'rdf-xsd',            github: "ruby-rdf/rdf-xsd",             branch: "develop"
+  gem 'sparql',             github: "ruby-rdf/sparql",              branch: "develop"
+  gem 'sparql-client',      github: "ruby-rdf/sparql-client",       branch: "develop"
+  gem 'sxp',                github: "gkellogg/sxp-ruby"
+  gem 'rest-client-components'
   gem 'simplecov',  require: false
   gem 'coveralls',  require: false
   gem 'psych',      platforms: [:mri, :rbx]

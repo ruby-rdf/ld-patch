@@ -61,11 +61,11 @@ The parser takes branch and follow tables generated from the [LD Patch Grammar](
 ## Dependencies
 
 * [Ruby](http://ruby-lang.org/) (>= 2.0.0)
-* [RDF.rb](http://rubygems.org/gems/rdf) (>= 1.1.15)
-* [EBNF][] (>= 0.3.0)
-* [SPARQL][] (>= 1.1.7)
-* [SXP][] (>= 0.1.5)
-* [RDF::XSD][] (>= 1.1.4)
+* [RDF.rb](http://rubygems.org/gems/rdf) (~> 2.0)
+* [EBNF][] (~> 1.0)
+* [SPARQL][] (~> 2.0)
+* [SXP][] (~> 0.1.6)
+* [RDF::XSD][] (~> 2.0)
 
 ## Mailing List
 * <http://lists.w3.org/Archives/Public/public-rdf-ruby/>

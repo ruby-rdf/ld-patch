@@ -40,7 +40,7 @@ module LD::Patch::Algebra
       raise LD::Patch::Error, "UpdateList ambigious value for #{var_or_iri.to_ntriples} and #{predicate.to_ntriples}" if list_heads.length > 1
       raise LD::Patch::Error, "UpdateList no value found for #{var_or_iri.to_ntriples} and #{predicate.to_ntriples}" if list_heads.empty?
       lh = list_heads.first
-      list = RDF::List.new(lh, queryable)
+      list = RDF::List.new(subject: lh, graph: queryable)
       raise LD::Patch::Error, "Invalid list" unless list.valid?
 
       start = case

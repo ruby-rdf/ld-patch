@@ -10,31 +10,25 @@ module LD::Patch::Algebra
     NAME = :patch
 
     ##
-    # Executes this upate on the given `writable` graph or repository.
+    # Executes this upate on the given `transactable` graph or repository.
     #
-    # @param  [RDF::Queryable] queryable
-    #   the graph or repository to write
+    # @param  [RDF::Transactable] graph
+    #   the graph to update.
     # @param  [Hash{Symbol => Object}] options
     #   any additional options
-    # @return [RDF::Queryable]
-    #   Returns queryable.
+    # @return [RDF::Transactable]
+    #   Returns graph.
     # @raise [Error]
     #   If any error is caught along the way, and rolls back the transaction
-    def execute(queryable, options = {})
+    def execute(graph, options = {})
       debug(options) {"Delete"}
 
-      # FIXME: due to insufficient transaction support, this is implemented by running through operands twice: the first using a clone of the graph, and the second acting on the graph directly
-      graph = RDF::Graph.new << queryable
-      loop do
+      graph.transaction(mutable: true) do |tx|
         operands.inject(RDF::Query::Solutions.new([RDF::Query::Solution.new])) do |bindings, op|
           # Invoke operand using bindings from prvious operation
-          op.execute(graph, options.merge(bindings: bindings))
+          op.execute(tx, options.merge(bindings: bindings))
         end
-
-        break if graph.equal?(queryable)
-        graph = queryable
       end
-      queryable
     end
   end
 end
