@@ -7,7 +7,7 @@ Gem::Specification.new do |gem|
 
   gem.name               = "ld-patch"
   gem.homepage           = "http://github.com/ruby-rdf/ld-patch"
-  gem.license            = 'Public Domain' if gem.respond_to?(:license=)
+  gem.license            = 'Unlicense'
   gem.summary            = "W3C Linked Data Patch Format for RDF.rb."
   gem.rubyforge_project  = 'ld-patch'
 
@@ -25,12 +25,12 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version      = '>= 2.0.0'
   gem.requirements               = []
   gem.add_runtime_dependency     'rdf',               '>= 2.0.0.beta', '< 3'
-  gem.add_runtime_dependency     'ebnf',              '~> 1.0', '>= 1.0.1'
-  gem.add_runtime_dependency     'sparql',            '>= 1.99', '< 3'
+  gem.add_runtime_dependency     'ebnf',              '~> 1.0', '>= 1.0.1beta'
+  gem.add_runtime_dependency     'sparql',            '>= 2.0.0.beta', '< 3'
   gem.add_runtime_dependency     'sxp',               '>= 1.0.0.beta', '< 2'
-  gem.add_runtime_dependency     'rdf-xsd',           '>= 1.99', '< 3'
+  gem.add_runtime_dependency     'rdf-xsd',           '>= 2.0.0.beta', '< 3'
 
-  gem.add_development_dependency 'json-ld',             '>= 1.99', '< 3'
+  gem.add_development_dependency 'json-ld',           '>= 2.0.0.beta', '< 3'
   gem.add_development_dependency 'rack',              '~> 1.6'
   gem.add_development_dependency 'rdf-spec',          '>= 2.0.0.beta', '< 3'
   gem.add_development_dependency 'open-uri-cached',   '~> 0.0', '>= 0.0.5'
