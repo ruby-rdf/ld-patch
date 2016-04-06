@@ -9,6 +9,7 @@ module LD
   #
   # @author [Gregg Kellogg](http://greggkellogg.net/)
   module Patch
+    require 'ld/patch/format'
     autoload :Algebra,      'ld/patch/algebra'
     autoload :Meta,         'ld/patch/meta'
     autoload :Parser,       'ld/patch/parser'
