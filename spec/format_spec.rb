@@ -5,7 +5,7 @@ require 'rdf/spec/format'
 
 describe LD::Patch::Format do
   it_behaves_like 'an RDF::Format' do
-    let(:format_class) {JSON::LD::Format}
+    let(:format_class) {LD::Patch::Format}
   end
 
   describe ".for" do
