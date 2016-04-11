@@ -20,7 +20,7 @@ group :development, :test do
   gem 'rdf-xsd',            github: "ruby-rdf/rdf-xsd",             branch: "develop"
   gem 'sparql',             github: "ruby-rdf/sparql",              branch: "develop"
   gem 'sparql-client',      github: "ruby-rdf/sparql-client",       branch: "develop"
-  gem 'sxp',                github: "gkellogg/sxp-ruby"
+  gem 'sxp',                github: "gkellogg/sxp-ruby",            branch: "develop"
   gem 'rest-client-components'
   gem 'simplecov',  require: false
   gem 'coveralls',  require: false

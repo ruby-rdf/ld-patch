@@ -24,15 +24,15 @@ Gem::Specification.new do |gem|
 
   gem.required_ruby_version      = '>= 2.0.0'
   gem.requirements               = []
-  gem.add_runtime_dependency     'rdf',               '>= 2.0.0.beta', '< 3'
-  gem.add_runtime_dependency     'ebnf',              '~> 1.0', '>= 1.0.1beta'
-  gem.add_runtime_dependency     'sparql',            '>= 2.0.0.beta', '< 3'
-  gem.add_runtime_dependency     'sxp',               '>= 1.0.0.beta', '< 2'
-  gem.add_runtime_dependency     'rdf-xsd',           '>= 2.0.0.beta', '< 3'
+  gem.add_runtime_dependency     'rdf',               '~> 2.0'
+  gem.add_runtime_dependency     'ebnf',              '~> 1.0', '>= 1.0.1'
+  gem.add_runtime_dependency     'sparql',            '~> 2.0'
+  gem.add_runtime_dependency     'sxp',               '~> 1.0'
+  gem.add_runtime_dependency     'rdf-xsd',           '~> 2.0'
 
-  gem.add_development_dependency 'json-ld',           '>= 2.0.0.beta', '< 3'
+  gem.add_development_dependency 'json-ld',           '~> 2.0'
   gem.add_development_dependency 'rack',              '~> 1.6'
-  gem.add_development_dependency 'rdf-spec',          '>= 2.0.0.beta', '< 3'
+  gem.add_development_dependency 'rdf-spec',          '~> 2.0'
   gem.add_development_dependency 'open-uri-cached',   '~> 0.0', '>= 0.0.5'
   gem.add_development_dependency 'rspec',             '~> 3.4'
   gem.add_development_dependency 'rspec-its',         '~> 1.2'
