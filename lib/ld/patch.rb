@@ -14,7 +14,7 @@ module LD
     autoload :Meta,         'ld/patch/meta'
     autoload :Parser,       'ld/patch/parser'
     autoload :Terminals,    'ld/patch/terminals'
-    autoload :Version,      'ld/patch/version'
+    autoload :VERSION,      'ld/patch/version'
 
     ##
     # Parse the given LD Patch `input` string.
