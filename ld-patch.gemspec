@@ -22,7 +22,7 @@ Gem::Specification.new do |gem|
     Implements the W3C Linked Data Patch Format and operations for RDF.rb.
     Makes use of the SPARQL gem for performing updates.)
 
-  gem.required_ruby_version      = '>= 2.0.0'
+  gem.required_ruby_version      = '>= 2.2.2'
   gem.requirements               = []
   gem.add_runtime_dependency     'rdf',               '~> 2.0'
   gem.add_runtime_dependency     'ebnf',              '~> 1.0', '>= 1.0.1'
