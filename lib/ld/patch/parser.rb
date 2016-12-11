@@ -350,26 +350,6 @@ module LD::Patch
     end
 
     ##
-    # Returns `true` if the input string is syntactically valid.
-    #
-    # @return [Boolean]
-    def valid?
-      parse
-      true
-    rescue ParseError
-      false
-    end
-
-    # @return [String]
-    def to_sxp_bin
-      @result
-    end
-
-    def to_s
-      @result.to_sxp
-    end
-
-    ##
     # Accumulated errors found during processing
     # @return [Array<String>]
     attr_reader :errors
@@ -514,57 +494,26 @@ module LD::Patch
     # Return variable allocated to an ID.
     # If no ID is provided, a new variable
     # is allocated. Otherwise, any previous assignment will be used.
-    #
-    # The variable has a #distinguished? method applied depending on if this
-    # is a disinguished or non-distinguished variable. Non-distinguished
-    # variables are effectively the same as BNodes.
     # @return [RDF::Query::Variable]
     def variable(id, distinguished = true)
-      id = nil if id.to_s.empty?
-
-      if id
-        @vars[id] ||= begin
-          v = RDF::Query::Variable.new(id)
-          v.distinguished = distinguished
-          v
-        end
-      else
-        unless distinguished
-          # Allocate a non-distinguished variable identifier
-          id = @nd_var_gen
-          @nd_var_gen = id.succ
-        end
+      @vars[id] ||= begin
         v = RDF::Query::Variable.new(id)
         v.distinguished = distinguished
         v
       end
     end
 
-    # Used for generating BNode labels
-    attr_accessor :nd_var_gen
-
-    # Reset the bnode cache, always generating new nodes, and start generating BNodes instead of non-distinguished variables
-    def clear_bnode_cache
-      @nd_var_gen = false
-      @bnode_cache = {}
-    end
-
     # Generate a BNode identifier
     def bnode(id = nil)
-      if @nd_var_gen
-        # Use non-distinguished variables within patterns
-        variable(id, false)
-      else
-        unless id
-          id = @options[:anon_base]
-          @options[:anon_base] = @options[:anon_base].succ
-        end
-        # Don't use provided ID to avoid aliasing issues when re-serializing the graph, when the bnode identifiers are re-used
-        (@bnode_cache ||= {})[id.to_s] ||= begin
-          new_bnode = RDF::Node.new
-          new_bnode.lexical = "_:#{id}"
-          new_bnode
-        end
+      unless id
+        id = @options[:anon_base]
+        @options[:anon_base] = @options[:anon_base].succ
+      end
+      # Don't use provided ID to avoid aliasing issues when re-serializing the graph, when the bnode identifiers are re-used
+      (@bnode_cache ||= {})[id.to_s] ||= begin
+        new_bnode = RDF::Node.new
+        new_bnode.lexical = "_:#{id}"
+        new_bnode
       end
     end
 
