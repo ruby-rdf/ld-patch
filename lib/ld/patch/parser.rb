@@ -177,11 +177,11 @@ module LD::Patch
     end
 
     # [13] path ::= ( '/' step | constraint )*
-    # ( '/' step | constraint )
-    production(:_path_1) do |input, current, callback|
+
+    # [14]    step            ::=     '^' iri | iri | INTEGER
+    production(:step) do |input, current, callback|
       step = case
       when current[:literal]    then Algebra::Index.new(current[:literal])
-      when current[:constraint] then current[:constraint]
       when current[:reverse]    then Algebra::Reverse.new(current[:iri])
       else                           current[:iri]
       end
@@ -191,7 +191,7 @@ module LD::Patch
     # [15] constraint ::= '[' path ( '=' value )? ']' | '!'
     production(:constraint) do |input, current, callback|
       path = Algebra::Path.new(*Array(current[:path]))
-      input[:constraint] = if current[:value]
+      (input[:path] ||= []) << if current[:value]
         Algebra::Constraint.new(path, current[:value])
       elsif current[:path]
         Algebra::Constraint.new(path)
