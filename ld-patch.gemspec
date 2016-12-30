@@ -37,7 +37,7 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency 'rspec',             '~> 3.4'
   gem.add_development_dependency 'rspec-its',         '~> 1.2'
   gem.add_development_dependency 'yard' ,             '~> 0.8'
-  gem.add_development_dependency 'webmock',           '~> 1.22'
+  gem.add_development_dependency 'webmock',           '~> 2.3'
 
   gem.post_install_message       = nil
 end
