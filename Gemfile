@@ -6,7 +6,6 @@ gem 'rdf',  github: "ruby-rdf/rdf",  branch: "develop"
 gem 'ebnf', github: "gkellogg/ebnf", branch: "develop"
 
 group :debug do
-  gem "wirble"
   gem "byebug", platforms: :mri
 end
 
@@ -20,7 +19,7 @@ group :development, :test do
   gem 'rdf-xsd',            github: "ruby-rdf/rdf-xsd",             branch: "develop"
   gem 'sparql',             github: "ruby-rdf/sparql",              branch: "develop"
   gem 'sparql-client',      github: "ruby-rdf/sparql-client",       branch: "develop"
-  gem 'sxp',                github: "gkellogg/sxp-ruby",            branch: "develop"
+  gem 'sxp',                github: "dryruby/sxp.rb",               branch: "develop"
   gem 'rest-client-components'
   gem 'simplecov',  require: false
   gem 'coveralls',  require: false

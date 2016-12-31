@@ -24,7 +24,7 @@ This gem implements the [LD Patch][] specification with a couple of changes and/
 * 100% free and unencumbered [public domain](http://unlicense.org/) software.
 * Complete [Linked Data Patch Format][LD Patch] parsing and execution
 * Implementation Report: {file:etc/earl.html EARL}
-* Compatible with Ruby >= 2.0.0.
+* Compatible with Ruby >= 2.2.2.
 
 ## Documentation
 Full documentation available on [Rubydoc.info][LD-Patch doc]
@@ -60,7 +60,7 @@ The parser takes branch and follow tables generated from the [LD Patch Grammar](
 
 ## Dependencies
 
-* [Ruby](http://ruby-lang.org/) (>= 2.0.0)
+* [Ruby](http://ruby-lang.org/) (>= 2.2.2)
 * [RDF.rb](http://rubygems.org/gems/rdf) (~> 2.0)
 * [EBNF][] (~> 1.0)
 * [SPARQL][] (~> 2.0)
