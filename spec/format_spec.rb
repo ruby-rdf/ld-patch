@@ -26,7 +26,7 @@ describe LD::Patch::Format do
     specify {expect(described_class.to_sym).to eq :ldpatch}
   end
 
-  describe ".cli_commands" do
+  describe ".cli_commands", skip: ("TextMate OptionParser issues" if ENV['TM_SELECTED_FILE']) do
     require 'rdf/cli'
     let(:nt) {File.expand_path("../test-files/1triple.nt", __FILE__)}
     let(:patch) {File.expand_path("../test-files/add-1triple.ldpatch", __FILE__)}
