@@ -9,7 +9,6 @@ Gem::Specification.new do |gem|
   gem.homepage           = "http://github.com/ruby-rdf/ld-patch"
   gem.license            = 'Unlicense'
   gem.summary            = "W3C Linked Data Patch Format for RDF.rb."
-  gem.rubyforge_project  = 'ld-patch'
 
   gem.authors            = ['Gregg Kellogg']
   gem.email              = 'public-rdf-ruby@w3.org'
