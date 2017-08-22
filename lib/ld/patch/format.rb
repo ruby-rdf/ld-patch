@@ -20,13 +20,16 @@ module LD::Patch
     def self.cli_commands
       {
         patch: {
-          description: "Patch the current graph using a URI Encoded patch file, or a referenced path file/URI",
+          description: "Patch the current graph using a patch file",
           help: "patch [--patch 'patch'] [--patch-file file]",
           parse: true,
           lambda: -> (argv, opts) do
-            opts[:patch] ||= RDF::Util::File.open_file(opts[:patch_file]) {|f| f.read}
+            opts[:patch] ||= case opts[:patch_file]
+            when IO, StringIO then opts[:patch_file]
+            else RDF::Util::File.open_file(opts[:patch_file]) {|f| f.read}
+            end
             raise ArgumentError, "Patching requires a URI encoded patch or reference to patch resource" unless opts[:patch]
-            $stdout.puts "Patch"
+            opts[:logger].info "Patch"
             patch = LD::Patch.parse(opts[:patch], base_uri: opts.fetch(:patch_file, "http://rubygems.org/gems/ld-patch"))
             RDF::CLI.repository.query(patch)
           end,
@@ -34,14 +37,16 @@ module LD::Patch
             RDF::CLI::Option.new(
               symbol: :patch,
               datatype: String,
+              control: :none,
               on: ["--patch STRING"],
               description: "Patch in URI encoded format"
             ) {|v| URI.decode(v)},
             RDF::CLI::Option.new(
               symbol: :patch_file,
               datatype: String,
+              control: :url2,
               on: ["--patch-file URI"],
-              description: "URI of patch file"
+              description: "Patch file"
             ) {|v| RDF::URI(v)},
           ]
         }
