@@ -22,6 +22,7 @@ module LD::Patch
         patch: {
           description: "Patch the current graph using a patch file",
           help: "patch [--patch 'patch'] [--patch-file file]",
+          control: :button,
           parse: true,
           lambda: -> (argv, opts) do
             opts[:patch] ||= case opts[:patch_file]
