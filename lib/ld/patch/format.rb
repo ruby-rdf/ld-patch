@@ -32,6 +32,7 @@ module LD::Patch
             raise ArgumentError, "Patching requires a URI encoded patch or reference to patch resource" unless opts[:patch]
             opts[:logger].info "Patch"
             patch = LD::Patch.parse(opts[:patch], base_uri: opts.fetch(:patch_file, "http://rubygems.org/gems/ld-patch"))
+            opts[:messages][:"S-Expression"] = [patch.to_sse]
             RDF::CLI.repository.query(patch)
           end,
           options: [
@@ -48,6 +49,13 @@ module LD::Patch
               control: :url2,
               on: ["--patch-file URI"],
               description: "Patch file"
+            ) {|v| RDF::URI(v)},
+            RDF::CLI::Option.new(
+              symbol: :to_sxp,
+              datatype: String,
+              control: :checkbox,
+              on: ["--to-sxp"],
+              description: "Instead of patching repository, display parsed patch as an S-Expression"
             ) {|v| RDF::URI(v)},
           ]
         }
