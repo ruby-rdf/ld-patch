@@ -36,8 +36,11 @@ describe LD::Patch::Format do
       it "patches from file" do
         expect {RDF::CLI.exec(["patch", "serialize", nt], patch_file: patch)}.to write.to(:output)
       end
+      it "patches from StringIO" do
+        expect {RDF::CLI.exec(["patch", "serialize", nt], patch_file: StringIO.new(File.read(patch)))}.to write.to(:output)
+      end
       it "patches from argument" do
-        expect {RDF::CLI.exec(["patch", "serialize", nt], patch: patch_enc)}.to write.to(:output)
+        expect {RDF::CLI.exec(["patch", "serialize", nt], patch_input: patch_enc)}.to write.to(:output)
       end
     end
   end
