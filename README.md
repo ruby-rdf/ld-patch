@@ -53,6 +53,19 @@ Full documentation available on [Rubydoc.info][LD-Patch doc]
     operator = LD::Patch.parse(patch, base_uri: "http://rubygems.org/gems/ld-patch")
     operator.execute(queryable) # alternatively queryable.query(operator)
 
+## Command Line
+When the `linkeddata` gem is installed, RDF.rb includes a `rdf` executable which acts as a wrapper to perform a number of different
+operations on RDF files, including LD::Patch, which is used as a stream command and must be followed by serialize to see the results. The commands specific to LD::Patch is 
+
+* `ld-patch`: Patch the current graph using a patch file
+
+Using this command requires either a `patch-input` where the patch is URI encoded, or `patch-file`, which references a URI or file path to the patch. 
+Example usage:
+
+    rdf patch serialize https://raw.githubusercontent.com/ruby-rdf/ld-patch/develop/etc/doap.ttl \
+      --patch-input Add%20%7B%20%3Chttp://example.org/s2%3E%20%3Chttp://example.org/p2%3E%20%3Chttp://example.org/o2%3E%20%7D%20. \
+      --output-format ttl
+
 ## Implementation Notes
 The reader uses the [EBNF][] gem to generate first, follow and branch tables, and uses the `Parser` and `Lexer` modules to implement the LD Patch parser.
 
