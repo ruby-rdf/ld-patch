@@ -21,26 +21,26 @@ module LD::Patch
       {
         patch: {
           description: "Patch the current graph using a patch file",
-          help: "patch [--patch 'patch'] [--patch-file file]",
+          help: "patch [--patch-input 'patch'] [--patch-file file]",
           control: :button,
           parse: true,
           lambda: -> (argv, opts) do
-            opts[:patch] ||= case opts[:patch_file]
+            opts[:patch_input] ||= case opts[:patch_file]
             when IO, StringIO then opts[:patch_file]
             else RDF::Util::File.open_file(opts[:patch_file]) {|f| f.read}
             end
-            raise ArgumentError, "Patching requires a URI encoded patch or reference to patch resource" unless opts[:patch]
+            raise ArgumentError, "Patching requires a patch or reference to patch resource" unless opts[:patch_input]
             opts[:logger].info "Patch"
-            patch = LD::Patch.parse(opts[:patch], base_uri: opts.fetch(:patch_file, "http://rubygems.org/gems/ld-patch"))
-            opts[:messages][:"S-Expression"] = [patch.to_sse]
+            patch = LD::Patch.parse(opts[:patch_input], base_uri: opts.fetch(:patch_file, "http://rubygems.org/gems/ld-patch"))
+            opts[:messages][:"S-Expression"] = [patch.to_sse] if opts[:to_sxp]
             RDF::CLI.repository.query(patch)
           end,
           options: [
             RDF::CLI::Option.new(
-              symbol: :patch,
+              symbol: :patch_input,
               datatype: String,
               control: :none,
-              on: ["--patch STRING"],
+              on: ["--patch-input STRING"],
               description: "Patch in URI encoded format"
             ) {|v| URI.decode(v)},
             RDF::CLI::Option.new(
@@ -56,7 +56,7 @@ module LD::Patch
               control: :checkbox,
               on: ["--to-sxp"],
               description: "Instead of patching repository, display parsed patch as an S-Expression"
-            ) {|v| RDF::URI(v)},
+            ),
           ]
         }
       }
