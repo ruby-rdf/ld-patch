@@ -3,7 +3,7 @@ source "http://rubygems.org"
 gemspec
 
 gem 'rdf',  github: "ruby-rdf/rdf",  branch: "develop"
-gem 'ebnf', github: "gkellogg/ebnf", branch: "develop"
+gem 'ebnf', github: "dryruby/ebnf",  branch: "develop"
 
 group :debug do
   gem "byebug", platforms: :mri
