@@ -44,6 +44,7 @@ module RDF::Util
         }
         #puts "use #{filename_or_url} locally"
         document_options[:headers][:content_type] = case filename_or_url.to_s
+        when /\.nt$/      then 'application/n-triples'
         when /\.ttl$/     then 'text/turtle'
         when /\.ldpatch$/ then 'text/ldpatch'
         else                  'unknown'
