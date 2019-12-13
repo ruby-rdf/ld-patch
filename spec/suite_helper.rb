@@ -22,11 +22,11 @@ module RDF::Util
     #   HTTP Request headers.
     # @return [IO] File stream
     # @yield [IO] File stream
-    def self.open_file(filename_or_url, options = {}, &block)
+    def self.open_file(filename_or_url, **options, &block)
       case
       when filename_or_url.to_s =~ /^file:/
         path = filename_or_url[5..-1]
-        Kernel.open(path.to_s, options, &block)
+        Kernel.open(path.to_s, **options, &block)
       when (filename_or_url.to_s =~ %r{^#{REMOTE_PATH}} && Dir.exist?(LOCAL_PATH))
         localpath = RDF::URI(filename_or_url).dup
         localpath.query = nil
@@ -54,14 +54,14 @@ module RDF::Util
         # For overriding content type from test data
         document_options[:headers][:content_type] = options[:contentType] if options[:contentType]
 
-        remote_document = RDF::Util::File::RemoteDocument.new(response.read, document_options)
+        remote_document = RDF::Util::File::RemoteDocument.new(response.read, **document_options)
         if block_given?
           yield remote_document
         else
           remote_document
         end
       else
-        original_open_file(filename_or_url, options) do |rd|
+        original_open_file(filename_or_url, **options) do |rd|
           # Override content_type
           if options[:contentType]
             rd.headers[:content_type] = options[:contentType]
@@ -143,7 +143,7 @@ module Fixtures
         when Hash then action['patch']
         else action
         end
-        @input ||= RDF::Util::File.open_file(URI.decode(url)) {|f| f.read}
+        @input ||= RDF::Util::File.open_file(CGI.unescape(url)) {|f| f.read}
       end
 
       def data
@@ -151,15 +151,15 @@ module Fixtures
       end
 
       def target_graph
-        @graph ||= RDF::Graph.load(URI.decode(data), base_uri: base)
+        @graph ||= RDF::Graph.load(CGI.unescape(data), base_uri: base)
       end
 
       def expected
-        @expected ||= RDF::Util::File.open_file(URI.decode(result)) {|f| f.read}
+        @expected ||= RDF::Util::File.open_file(CGI.unescape(result)) {|f| f.read}
       end
 
       def expected_graph
-        @expected_graph ||= RDF::Graph.load(URI.decode(result), base_uri: base)
+        @expected_graph ||= RDF::Graph.load(CGI.unescape(result), base_uri: base)
       end
 
       def evaluate?
