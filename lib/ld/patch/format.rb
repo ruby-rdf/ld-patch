@@ -42,7 +42,7 @@ module LD::Patch
               control: :none,
               on: ["--patch-input STRING"],
               description: "Patch in URI encoded format"
-            ) {|v| URI.decode(v)},
+            ) {|v| CGI.decode(v)},
             RDF::CLI::Option.new(
               symbol: :patch_file,
               datatype: String,

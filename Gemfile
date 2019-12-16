@@ -3,7 +3,7 @@ source "http://rubygems.org"
 gemspec
 
 gem 'rdf',  github: "ruby-rdf/rdf",  branch: "develop"
-gem 'ebnf', github: "gkellogg/ebnf", branch: "develop"
+gem 'ebnf', github: "dryruby/ebnf",  branch: "develop"
 
 group :debug do
   gem "byebug", platforms: :mri
@@ -21,13 +21,7 @@ group :development, :test do
   gem 'sparql-client',      github: "ruby-rdf/sparql-client",       branch: "develop"
   gem 'sxp',                github: "dryruby/sxp.rb",               branch: "develop"
   gem 'rest-client-components'
-  gem 'simplecov',  require: false
-  gem 'coveralls',  require: false
+  gem 'simplecov',  platforms: :mri
+  gem 'coveralls',  '~> 0.8', platforms: :mri
   gem 'psych',      platforms: [:mri, :rbx]
-end
-
-platforms :rbx do
-  gem 'rubysl', '~> 2.0'
-  gem 'rubinius', '~> 2.0'
-  gem 'json'
 end

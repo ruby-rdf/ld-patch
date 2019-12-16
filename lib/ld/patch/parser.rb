@@ -295,7 +295,7 @@ module LD::Patch
         str = lit.delete(:string)
         lit[:datatype] = lit.delete(:iri) if lit[:iri]
         lit[:language] = lit.delete(:language).last.downcase if lit[:language]
-        input[:literal] = RDF::Literal.new(str, lit) if str
+        input[:literal] = RDF::Literal.new(str, **lit) if str
       end
     end
 
@@ -323,7 +323,7 @@ module LD::Patch
     # @yield  [parser] `self`
     # @yieldparam  [LD::Patch::Parser] parser
     # @return [LD::Patch::Parser] The parser instance, or result returned from block
-    def initialize(input = nil, options = {}, &block)
+    def initialize(input = nil, **options, &block)
       @input = case input
       when IO, StringIO then input.read
       else input.to_s.dup
@@ -366,10 +366,13 @@ module LD::Patch
     # @return [SPARQL::Algebra::Operator, Object]
     # @raise [ParseError] when illegal grammar detected.
     def parse(prod = START)
-      ll1_parse(@input, prod.to_sym, @options.merge(branch: BRANCH,
-                                                    first: FIRST,
-                                                    follow: FOLLOW,
-                                                    whitespace: WS)
+      ll1_parse(@input,
+        prod.to_sym,
+        branch: BRANCH,
+        first: FIRST,
+        follow: FOLLOW,
+        whitespace: WS,
+        **@options
       ) do |context, *data|
         case context
         when :trace
@@ -545,7 +548,7 @@ module LD::Patch
     end
 
     # Create a literal
-    def literal(value, options = {})
+    def literal(value, **options)
       options = options.dup
       # Internal representation is to not use xsd:string, although it could arguably go the other way.
       options.delete(:datatype) if options[:datatype] == RDF::XSD.string
@@ -554,7 +557,7 @@ module LD::Patch
         "options: #{options.inspect}, " +
         "validate: #{validate?.inspect}, "
       end
-      RDF::Literal.new(value, options.merge(validate: validate?))
+      RDF::Literal.new(value, validate: validate?, **options)
     end
   end
 end

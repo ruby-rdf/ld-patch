@@ -28,8 +28,8 @@ module LD
     #   the base URI to use when resolving relative URIs
     # @option (see LD::Patch::Parser#initialize)
     # @return [SPARQL::Algebra::Operator] The executable parsed Patch
-    def self.parse(input, options = {})
-      LD::Patch::Parser.new(input, options).parse
+    def self.parse(input, **options)
+      LD::Patch::Parser.new(input, **options).parse
     end
 
     class Error < StandardError
@@ -42,7 +42,7 @@ module LD
       # @param  [String, #to_s]          message
       # @param  [Hash{Symbol => Object}] options
       # @option options [Integer]        :code (422)
-      def initialize(message, options = {})
+      def initialize(message, **options)
         @code = options.fetch(:status_code, 422)
         super(message.to_s)
       end
@@ -70,7 +70,7 @@ module LD
       # @option options [String]         :token  (nil)
       # @option options [Integer]        :lineno (nil)
       # @option options [Integer]        :code (400)
-      def initialize(message, options = {})
+      def initialize(message, **options)
         @token      = options[:token]
         @lineno     = options[:lineno] || (@token.lineno if @token.respond_to?(:lineno))
         super(message.to_s, code: options.fetch(:code, 400))

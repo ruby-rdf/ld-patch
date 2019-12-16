@@ -8,11 +8,11 @@ JSON_STATE = JSON::State.new(
    array_nl:      "\n"
  )
 
-RSpec::Matchers.define :generate do |expected, options = {}|
+RSpec::Matchers.define :generate do |expected, **options|
   def parser(options = {})
     @debug = options[:progress] ? 2 : []
     Proc.new do |input|
-      parser = LD::Patch::Parser.new(input, {debug: @debug, resolve_iris: false}.merge(options))
+      parser = LD::Patch::Parser.new(input, debug: @debug, resolve_iris: false, **options)
       options[:production] ? parser.parse(options[:production]) : parser.parse
     end
   end
@@ -31,15 +31,15 @@ RSpec::Matchers.define :generate do |expected, options = {}|
   match do |input|
     case
     when expected == LD::Patch::ParseError
-      expect {parser(options).call(input)}.to raise_error(expected)
+      expect {parser(**options).call(input)}.to raise_error(expected)
     when expected.is_a?(Regexp)
-      @actual = parser(options).call(input)
+      @actual = parser(**options).call(input)
       expect(normalize(@actual.to_sxp)).to match(expected)
     when expected.is_a?(String)
-      @actual = parser(options).call(input)
+      @actual = parser(**options).call(input)
       expect(normalize(@actual.to_sxp)).to eq normalize(expected)
     else
-      @actual = parser(options).call(input)
+      @actual = parser(**options).call(input)
       expect(@actual).to eq expected
     end
   end
