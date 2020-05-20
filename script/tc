@@ -16,7 +16,7 @@ RUN_TIME = Time.now
 def earl_preamble(options)
   options[:output].write File.read(File.expand_path("../../etc/doap.ttl", __FILE__))
   options[:output].puts %(
-<> foaf:primaryTopic <http://rubygems.org/gems/ld-patch> ;
+<> foaf:primaryTopic <https://rubygems.org/gems/ld-patch> ;
   dc:issued "#{RUN_TIME.xmlschema}"^^xsd:dateTime ;
   foaf:maker <#{ASSERTOR}> .
 
@@ -74,7 +74,7 @@ def run_tc(t, options)
     options[:output].puts %{
 [ a earl:Assertion;
   earl:assertedBy <#{ASSERTOR}>;
-  earl:subject <http://rubygems.org/gems/ld-patch>;
+  earl:subject <https://rubygems.org/gems/ld-patch>;
   earl:test <#{test}>;
   earl:result [
     a earl:TestResult;

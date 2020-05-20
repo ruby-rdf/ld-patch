@@ -50,7 +50,7 @@ Full documentation available on [Rubydoc.info][LD-Patch doc]
       Bind ?ruby <> / doap:programming-language .
       Cut ?ruby .
     )
-    operator = LD::Patch.parse(patch, base_uri: "http://rubygems.org/gems/ld-patch")
+    operator = LD::Patch.parse(patch, base_uri: "https://rubygems.org/gems/ld-patch")
     operator.execute(queryable) # alternatively queryable.query(operator)
 
 ## Command Line
@@ -74,7 +74,7 @@ The parser takes branch and follow tables generated from the [LD Patch Grammar](
 ## Dependencies
 
 * [Ruby](http://ruby-lang.org/) (>= 2.4)
-* [RDF.rb](http://rubygems.org/gems/rdf) (~> 3.1)
+* [RDF.rb](https://rubygems.org/gems/rdf) (~> 3.1)
 * [EBNF][] (~> 1.2)
 * [SPARQL][] (~> 3.1)
 * [SXP][] (~> 1.1)
@@ -84,7 +84,7 @@ The parser takes branch and follow tables generated from the [LD Patch Grammar](
 * <http://lists.w3.org/Archives/Public/public-rdf-ruby/>
 
 ## Author
-* [Gregg Kellogg](http://github.com/gkellogg) - <http://greggkellogg.net/>
+* [Gregg Kellogg](https://github.com/gkellogg) - <http://greggkellogg.net/>
 
 ## Contributing
 This repository uses [Git Flow](https://github.com/nvie/gitflow) to mange development and release activity. All submissions _must_ be on a feature branch based on the _develop_ branch to ease staging and integration.
@@ -107,12 +107,12 @@ A copy of the [LD Patch EBNF](file:etc/ld-patch.ebnf) and derived parser files a
 [YARD]:           http://yardoc.org/
 [YARD-GS]:        http://rubydoc.info/docs/yard/file/docs/GettingStarted.md
 [PDD]:             http://lists.w3.org/Archives/Public/public-rdf-ruby/2010May/0013.html
-[RDF.rb]:         http://rubygems.org/gems/rdf
-[RDF::XSD]:       http://rubygems.org/gems/rdf-xsd
-[EBNF]:           http://rubygems.org/gems/ebnf
-[SPARQL]:         http://rubygems.org/gems/sparql
-[Linked Data]:    http://rubygems.org/gems/linkeddata
+[RDF.rb]:         https://rubygems.org/gems/rdf
+[RDF::XSD]:       https://rubygems.org/gems/rdf-xsd
+[EBNF]:           https://rubygems.org/gems/ebnf
+[SPARQL]:         https://rubygems.org/gems/sparql
+[Linked Data]:    https://rubygems.org/gems/linkeddata
 [SSE]:            http://openjena.org/wiki/SSE
-[SXP]:            http://rubygems.org/gems/sxp-ruby
+[SXP]:            https://rubygems.org/gems/sxp-ruby
 [LD Patch]:       http://www.w3.org/TR/ldpatch/
 [LD-Patch doc]:   http://rubydoc.info/github/ruby-rdf/ld-patch

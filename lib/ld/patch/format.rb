@@ -31,7 +31,7 @@ module LD::Patch
             end
             raise ArgumentError, "Patching requires a patch or reference to patch resource" unless opts[:patch_input]
             opts[:logger].info "Patch"
-            patch = LD::Patch.parse(opts[:patch_input], base_uri: opts.fetch(:patch_file, "http://rubygems.org/gems/ld-patch"))
+            patch = LD::Patch.parse(opts[:patch_input], base_uri: opts.fetch(:patch_file, "https://rubygems.org/gems/ld-patch"))
             opts[:messages][:reasoner] = {"S-Expression": [patch.to_sse]} if opts[:to_sxp]
             RDF::CLI.repository.query(patch)
           end,

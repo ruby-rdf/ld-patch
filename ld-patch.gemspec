@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.date               = File.mtime('VERSION').strftime('%Y-%m-%d')
 
   gem.name               = "ld-patch"
-  gem.homepage           = "http://github.com/ruby-rdf/ld-patch"
+  gem.homepage           = "https://github.com/ruby-rdf/ld-patch"
   gem.license            = 'Unlicense'
   gem.summary            = "W3C Linked Data Patch Format for RDF.rb."
 
