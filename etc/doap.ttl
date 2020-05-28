@@ -12,7 +12,7 @@
 <> a doap:Project, earl:TestSubject, earl:Software ;
   doap:name          "LD::Patch" ;
   doap:homepage      <https://ruby-rdf.github.com/ld-patch> ;
-  doap:license       <https://creativecommons.org/licenses/publicdomain/> ;
+  doap:license       <https://unlicense.org/> ;
   doap:shortdesc     "W3C Linked Data Patch Format for RDF.rb."@en ;
   doap:description   """
     Implements the W3C Linked Data Patch Format and operations for RDF.rb.
