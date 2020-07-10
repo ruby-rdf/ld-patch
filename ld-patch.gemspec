@@ -6,7 +6,7 @@ Gem::Specification.new do |gem|
   gem.date               = File.mtime('VERSION').strftime('%Y-%m-%d')
 
   gem.name               = "ld-patch"
-  gem.homepage           = "http://github.com/ruby-rdf/ld-patch"
+  gem.homepage           = "https://github.com/ruby-rdf/ld-patch"
   gem.license            = 'Unlicense'
   gem.summary            = "W3C Linked Data Patch Format for RDF.rb."
 
@@ -23,7 +23,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version      = '>= 2.4'
   gem.requirements               = []
   gem.add_runtime_dependency     'rdf',               '~> 3.1'
-  gem.add_runtime_dependency     'ebnf',              '~> 1.2'
+  gem.add_runtime_dependency     'ebnf',              '~> 2.0'
   gem.add_runtime_dependency     'sparql',            '~> 3.1'
   gem.add_runtime_dependency     'sxp',               '~> 1.1'
   gem.add_runtime_dependency     'rdf-xsd',           '~> 3.1'
