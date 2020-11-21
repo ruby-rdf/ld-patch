@@ -10,9 +10,8 @@ JSON_STATE = JSON::State.new(
 
 RSpec::Matchers.define :generate do |expected, **options|
   def parser(options = {})
-    @debug = options[:progress] ? 2 : []
     Proc.new do |input|
-      parser = LD::Patch::Parser.new(input, debug: @debug, resolve_iris: false, **options)
+      parser = LD::Patch::Parser.new(input, resolve_iris: false, **options)
       options[:production] ? parser.parse(options[:production]) : parser.parse
     end
   end
@@ -29,6 +28,7 @@ RSpec::Matchers.define :generate do |expected, **options|
   end
 
   match do |input|
+    @input = input
     case
     when expected == LD::Patch::ParseError
       expect {parser(**options).call(input)}.to raise_error(expected)
@@ -45,16 +45,16 @@ RSpec::Matchers.define :generate do |expected, **options|
   end
   
   failure_message do |input|
-    "Input        : #{input}\n"
+    "Input        : #{@input}\n" +
     case expected
     when String
-      "Expected     : #{expected}\n"
+      "Expected     : #{normalize(expected)}\n"
     else
-      "Expected     : #{expected.inspect}\n" +
-      "Expected(sse): #{expected.to_sxp}\n"
+      "Expected     : #{expected.to_sxp}\n" +
+      "Expected(raw): #{expected.inspect}\n"
     end +
-    "Actual       : #{actual.inspect}\n" +
-    "Actual(sse)  : #{actual.to_sxp}\n" +
-    "Processing results:\n#{@debug.is_a?(Array) ? @debug.join("\n") : ''}"
+    "Actual       : #{actual.to_sxp}\n" +
+    "Actual(raw)  : #{actual.inspect}\n" +
+    "Processing results:\n#{options[:logger]}"
   end
 end

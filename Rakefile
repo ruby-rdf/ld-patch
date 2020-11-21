@@ -32,24 +32,24 @@ namespace :doc do
 end
 
 desc 'Create versions of ebnf files in etc'
-task etc: %w{etc/ld-patch.sxp etc/ld-patch.html etc/ld-patch.ll1.sxp}
+task etc: %w{etc/ld-patch.sxp etc/ld-patch.html etc/ld-patch.peg.sxp}
 
 desc 'Build first, follow and branch tables'
 task meta: "lib/ld/patch/meta.rb"
 
 file "lib/ld/patch/meta.rb" => "etc/ld-patch.ebnf" do |t|
   sh %{
-    ebnf --ll1 ldpatch --format rb \
+    ebnf --peg --format rb \
       --mod-name LD::Patch::Meta \
       --output lib/ld/patch/meta.rb \
       etc/ld-patch.ebnf
   }
 end
 
-file "etc/ld-patch.ll1.sxp" => "etc/ld-patch.ebnf" do |t|
+file "etc/ld-patch.peg.sxp" => "etc/ld-patch.ebnf" do |t|
   sh %{
-    ebnf --ll1 ldpatch --format sxp \
-      --output etc/ld-patch.ll1.sxp \
+    ebnf --peg --format sxp \
+      --output etc/ld-patch.peg.sxp \
       etc/ld-patch.ebnf
   }
 end

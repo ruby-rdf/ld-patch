@@ -2,8 +2,14 @@ $:.unshift File.expand_path("../..", __FILE__)
 require 'spec_helper'
 
 describe LD::Patch::Algebra do
-  before(:each) {$stderr = StringIO.new}
-  after(:each) {$stderr = STDERR}
+  before(:each) do
+    @logger = RDF::Spec.logger
+  end
+  after(:each) do |example|
+    puts @logger.to_s if
+      example.exception &&
+      !example.exception.is_a?(RSpec::Expectations::ExpectationNotMetError)
+  end
 
   PATHS_TTL = %(
     <http://example.org/s> <http://example.org/p1> _:bs .
@@ -419,10 +425,11 @@ describe LD::Patch::Algebra do
     }.each do |name, props|
       it name do
         graph = RDF::Graph.new << RDF::NTriples::Reader.new(props[:data])
-        operator = LD::Patch::Parser.new(props[:patch]).parse
+        operator = LD::Patch::Parser.new(props[:patch], logger: @logger).parse
+        @logger.info "patch: #{operator.to_sxp}"
         result = RDF::Graph.new << RDF::NTriples::Reader.new(props[:result])
         operator.execute(graph)
-        expect(graph).to be_equivalent_graph(result)
+        expect(graph).to be_equivalent_graph(result, logger: @logger)
       end
     end
   end
@@ -470,7 +477,7 @@ describe LD::Patch::Algebra do
     }.each do |name, props|
       it name do
         graph = RDF::Graph.new << RDF::NTriples::Reader.new(props[:data])
-        operator = LD::Patch::Parser.new(props[:patch]).parse
+        operator = LD::Patch::Parser.new(props[:patch], logger: @logger).parse
         expect {operator.execute(graph)}.to raise_error(LD::Patch::Error)
       end
     end

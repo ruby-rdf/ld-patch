@@ -23,7 +23,7 @@ Gem::Specification.new do |gem|
   gem.required_ruby_version      = '>= 2.4'
   gem.requirements               = []
   gem.add_runtime_dependency     'rdf',               '~> 3.1'
-  gem.add_runtime_dependency     'ebnf',              '~> 2.0'
+  gem.add_runtime_dependency     'ebnf',              '~> 2.1'
   gem.add_runtime_dependency     'sparql',            '~> 3.1'
   gem.add_runtime_dependency     'sxp',               '~> 1.1'
   gem.add_runtime_dependency     'rdf-xsd',           '~> 3.1'
