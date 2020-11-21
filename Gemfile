@@ -21,7 +21,9 @@ group :development, :test do
   gem 'sparql-client',      github: "ruby-rdf/sparql-client",       branch: "develop"
   gem 'sxp',                github: "dryruby/sxp.rb",               branch: "develop"
   gem 'rest-client-components'
+  gem 'erubis'
   gem 'simplecov',  platforms: :mri
   gem 'coveralls',  '~> 0.8', platforms: :mri
+  gem 'awesome_print',    github: 'akshaymohite/awesome_print'
   gem 'psych',      platforms: [:mri, :rbx]
 end
