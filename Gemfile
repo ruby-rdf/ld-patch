@@ -25,5 +25,4 @@ group :development, :test do
   gem 'simplecov',  platforms: :mri
   gem 'coveralls',  '~> 0.8', platforms: :mri
   gem 'awesome_print',    github: 'akshaymohite/awesome_print'
-  gem 'psych',      platforms: [:mri, :rbx]
 end
