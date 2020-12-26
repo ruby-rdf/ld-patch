@@ -23,10 +23,17 @@ module LD::Patch::Algebra
     def execute(graph, options = {})
       debug(options) {"Delete"}
 
-      graph.transaction(mutable: true) do |tx|
+      if graph.respond_to?(:transaction)
+        graph.transaction(mutable: true) do |tx|
+          operands.inject(RDF::Query::Solutions.new([RDF::Query::Solution.new])) do |bindings, op|
+            # Invoke operand using bindings from prvious operation
+            op.execute(tx, options.merge(bindings: bindings))
+          end
+        end
+      else
         operands.inject(RDF::Query::Solutions.new([RDF::Query::Solution.new])) do |bindings, op|
           # Invoke operand using bindings from prvious operation
-          op.execute(tx, options.merge(bindings: bindings))
+          op.execute(graph, options.merge(bindings: bindings))
         end
       end
     end
