@@ -14,10 +14,7 @@
   doap:homepage      <https://ruby-rdf.github.com/ld-patch> ;
   doap:license       <https://unlicense.org/1.0/> ;
   doap:shortdesc     "W3C Linked Data Patch Format for RDF.rb."@en ;
-  doap:description   """
-    Implements the W3C Linked Data Patch Format and operations for RDF.rb.
-    Makes use of the SPARQL gem for performing updates
-  """@en ;
+  doap:description   "Implements the W3C Linked Data Patch Format and operations for RDF.rb."@en ;
   doap:created       "2015-08-23"^^xsd:date ;
   doap:programming-language "Ruby" ;
   doap:implements    <http://www.w3.org/TR/ldpatch/> ;
@@ -31,11 +28,5 @@
   doap:maintainer    <https://greggkellogg.net/foaf#me> ;
   doap:documenter    <https://greggkellogg.net/foaf#me> ;
   foaf:maker         <https://greggkellogg.net/foaf#me> ;
-  dc:title           "LD::Patch" ;
-  dc:description     """
-    Implements the W3C Linked Data Patch Format and operations for RDF.rb.
-    Makes use of the SPARQL gem for performing updates
-  """@en ;
-  dc:date            "2015-08-23"^^xsd:date ;
   dc:creator         <https://greggkellogg.net/foaf#me> ;
   dc:isPartOf        <https://rubygems.org/gems/rdf> .
