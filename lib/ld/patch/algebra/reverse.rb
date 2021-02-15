@@ -30,7 +30,7 @@ module LD::Patch::Algebra
       terms = Array(options.fetch(:terms))
 
       results = terms.map do |object|
-        queryable.query(object: object, predicate: op).map(&:subject)
+        queryable.query({object: object, predicate: op}).map(&:subject)
       end.flatten
 
       RDF::Query::Solutions.new(results.map {|t| RDF::Query::Solution.new(path: t)})
