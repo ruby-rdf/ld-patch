@@ -24,5 +24,4 @@ group :development, :test do
   gem 'erubis'
   gem 'simplecov',  platforms: :mri
   gem 'coveralls',  '~> 0.8', platforms: :mri
-  gem 'awesome_print',    github: 'akshaymohite/awesome_print'
 end

@@ -52,11 +52,11 @@ module LD::Patch::Algebra
         case op
         when RDF::URI
           terms.map do |subject|
-            queryable.query(subject: subject, predicate: op).map(&:object)
+            queryable.query({subject: subject, predicate: op}).map(&:object)
           end.flatten
         when SPARQL::Algebra::Query
           # Get path solutions for each term for op
-          op.execute(queryable, options.merge(terms: terms)).map do |soln|
+          op.execute(queryable, **options.merge(terms: terms)).map do |soln|
             soln.path
           end.flatten
         else

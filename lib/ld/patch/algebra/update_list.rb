@@ -35,7 +35,7 @@ module LD::Patch::Algebra
         var_or_iri = solution[var_or_iri]
       end
 
-      list_heads = queryable.query(subject: var_or_iri, predicate: predicate).map {|s| s.object}
+      list_heads = queryable.query({subject: var_or_iri, predicate: predicate}).map {|s| s.object}
 
       raise LD::Patch::Error, "UpdateList ambigious value for #{var_or_iri.to_ntriples} and #{predicate.to_ntriples}" if list_heads.length > 1
       raise LD::Patch::Error, "UpdateList no value found for #{var_or_iri.to_ntriples} and #{predicate.to_ntriples}" if list_heads.empty?

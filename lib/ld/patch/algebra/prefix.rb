@@ -31,7 +31,7 @@ module LD::Patch::Algebra
     # @see    http://www.w3.org/TR/rdf-sparql-query/#sparqlAlgebra
     def execute(queryable, options = {}, &block)
       debug(options) {"Prefix"}
-      @solutions = queryable.query(operands.last, options.merge(depth: options[:depth].to_i + 1), &block)
+      @solutions = queryable.query(operands.last, **options.merge(depth: options[:depth].to_i + 1), &block)
     end
     
     ##
