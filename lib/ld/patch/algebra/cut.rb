@@ -43,7 +43,7 @@ module LD::Patch::Algebra
       end
 
       # Also delete triples having var in the object position
-      queryable.query(object: var).each do |statement|
+      queryable.query({object: var}).each do |statement|
         queryable.delete(statement)
         cut_count += 1
       end
