@@ -22,6 +22,7 @@ group :development, :test do
   gem 'sxp',                github: "dryruby/sxp.rb",               branch: "develop"
   gem 'rest-client-components'
   gem 'erubis'
-  gem 'simplecov',  platforms: :mri
-  gem 'coveralls',  '~> 0.8', platforms: :mri
+  gem 'simplecov', '~> 0.21',  platforms: :mri
+  gem 'simplecov-lcov', '~> 0.8',  platforms: :mri
+  gem 'coveralls',  platforms: :mri
 end
