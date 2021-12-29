@@ -263,7 +263,7 @@ describe LD::Patch::Parser do
           } .
           ),
         result: %(
-          (prefix ((rdfs <http://www.w3.org/2000/01/rdf-schema#>) (schema <http://schema.org/>))
+          (prefix ((rdfs: <http://www.w3.org/2000/01/rdf-schema#>) (schema: <http://schema.org/>))
             (patch
               (bind ?b3 "W3C/MIT" (path (reverse schema:name)))
               (bind ?b2 ?b3 (path (reverse schema:workLocation)))
