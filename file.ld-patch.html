@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>
+  File: ld-patch
+  
+    &mdash; W3C Linked Data Patch Format for RDF.rb.
+  
+</title>
+
+  <link rel="stylesheet" href="css/style.css" type="text/css" />
+
+  <link rel="stylesheet" href="css/common.css" type="text/css" />
+
+<script type="text/javascript">
+  pathId = "ld-patch";
+  relpath = '';
+</script>
+
+
+  <script type="text/javascript" charset="utf-8" src="js/jquery.js"></script>
+
+  <script type="text/javascript" charset="utf-8" src="js/app.js"></script>
+
+
+  </head>
+  <body>
+    <div class="nav_wrap">
+      <iframe id="nav" src="file_list.html?1"></iframe>
+      <div id="resizer"></div>
+    </div>
+
+    <div id="main" tabindex="-1">
+      <div id="header">
+        <div id="menu">
+  
+    <a href="_index.html">Index</a> &raquo; 
+    <span class="title">File: ld-patch</span>
+  
+</div>
+
+        <div id="search">
+  
+    <a class="full_list_link" id="class_list_link"
+        href="class_list.html">
+
+        <svg width="24" height="24">
+          <rect x="0" y="4" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="12" width="24" height="4" rx="1" ry="1"></rect>
+          <rect x="0" y="20" width="24" height="4" rx="1" ry="1"></rect>
+        </svg>
+    </a>
+  
+</div>
+        <div class="clear"></div>
+      </div>
+
+      <div id="content"><div id='filecontents'>[1]    ldpatch                          ::= <a href="#grammar-production-prologue">prologue</a>
+                                          <a href="#grammar-production-statement">statement</a><code>*</code> 
+[2]    prologue                         ::= <a href="#grammar-production-prefixID">prefixID</a><code>*</code> 
+[3]    statement                        ::= <a href="#grammar-production-bind">bind</a>
+                                          <code>|</code> <a href="#grammar-production-add">add</a>
+                                          <code>|</code> <a href="#grammar-production-addNew">addNew</a>
+                                          <code>|</code> <a href="#grammar-production-delete">delete</a>
+                                          <code>|</code> <a href="#grammar-production-deleteExisting">deleteExisting</a>
+                                          <code>|</code> <a href="#grammar-production-cut">cut</a>
+                                          <code>|</code> <a href="#grammar-production-updateList">updateList</a>
+[4]    bind                             ::= <code>(</code> "<code class="grammar-literal">Bind</code>" <code>|</code> "<code class="grammar-literal">B</code>"<code>)</code> 
+                                          <a href="#grammar-production-VAR1">VAR1</a>
+                                          <a href="#grammar-production-value">value</a>
+                                          <a href="#grammar-production-path">path</a><code>?</code> 
+                                          "<code class="grammar-literal">.</code>"
+[5]    add                              ::= <code>(</code> "<code class="grammar-literal">Add</code>" <code>|</code> "<code class="grammar-literal">A</code>"<code>)</code> 
+                                          "<code class="grammar-literal">{</code>"
+                                          <a href="#grammar-production-graph">graph</a>
+                                          "<code class="grammar-literal">}</code>"
+                                          "<code class="grammar-literal">.</code>"
+[6]    addNew                           ::= <code>(</code> "<code class="grammar-literal">AddNew</code>" <code>|</code> "<code class="grammar-literal">AN</code>"<code>)</code> 
+                                          "<code class="grammar-literal">{</code>"
+                                          <a href="#grammar-production-graph">graph</a>
+                                          "<code class="grammar-literal">}</code>"
+                                          "<code class="grammar-literal">.</code>"
+[7]    delete                           ::= <code>(</code> "<code class="grammar-literal">Delete</code>" <code>|</code> "<code class="grammar-literal">D</code>"<code>)</code> 
+                                          "<code class="grammar-literal">{</code>"
+                                          <a href="#grammar-production-graph">graph</a>
+                                          "<code class="grammar-literal">}</code>"
+                                          "<code class="grammar-literal">.</code>"
+[8]    deleteExisting                   ::= <code>(</code> "<code class="grammar-literal">DeleteExisting</code>" <code>|</code> "<code class="grammar-literal">DE</code>"<code>)</code> 
+                                          "<code class="grammar-literal">{</code>"
+                                          <a href="#grammar-production-graph">graph</a>
+                                          "<code class="grammar-literal">}</code>"
+                                          "<code class="grammar-literal">.</code>"
+[9]    cut                              ::= <code>(</code> "<code class="grammar-literal">Cut</code>" <code>|</code> "<code class="grammar-literal">C</code>"<code>)</code> 
+                                          <a href="#grammar-production-VAR1">VAR1</a>
+                                          "<code class="grammar-literal">.</code>"
+[10]   updateList                       ::= <code>(</code> "<code class="grammar-literal">UpdateList</code>" <code>|</code> "<code class="grammar-literal">UL</code>"<code>)</code> 
+                                          <a href="#grammar-production-varOrIRI">varOrIRI</a>
+                                          <a href="#grammar-production-predicate">predicate</a>
+                                          <a href="#grammar-production-slice">slice</a>
+                                          <a href="#grammar-production-collection">collection</a>
+                                          "<code class="grammar-literal">.</code>"
+[11]   varOrIRI                         ::= <a href="#grammar-production-iri">iri</a>
+                                          <code>|</code> <a href="#grammar-production-VAR1">VAR1</a>
+[12]   value                            ::= <a href="#grammar-production-iri">iri</a>
+                                          <code>|</code> <a href="#grammar-production-literal">literal</a>
+                                          <code>|</code> <a href="#grammar-production-VAR1">VAR1</a>
+[13]   path                             ::= ("<code class="grammar-literal">/</code>" <a href="#grammar-production-step">step</a> <code>|</code> <a href="#grammar-production-constraint">constraint</a>)<code>*</code> 
+[14]   step                             ::= "<code class="grammar-literal">^</code>" <a href="#grammar-production-iri">iri</a>
+                                          <code>|</code> <a href="#grammar-production-iri">iri</a>
+                                          <code>|</code> <a href="#grammar-production-INTEGER">INTEGER</a>
+[15]   constraint                       ::= "<code class="grammar-literal">[</code>" <a href="#grammar-production-path">path</a> ("<code class="grammar-literal">=</code>" <a href="#grammar-production-value">value</a>)<code>?</code>  "<code class="grammar-literal">]</code>"
+                                          <code>|</code> <code class="grammar-char-escape">#x21</code>
+[16]   slice                            ::= <a href="#grammar-production-INTEGER">INTEGER</a><code>?</code> 
+                                          "<code class="grammar-literal">..</code>"
+                                          <a href="#grammar-production-INTEGER">INTEGER</a><code>?</code> 
+[143s] VAR1                             ::= "<code class="grammar-literal">?</code>"
+                                          <a href="#grammar-production-VARNAME">VARNAME</a>
+[166s] VARNAME                          ::= <code>(</code> <a href="#grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>)</code> 
+                                          (<a href="#grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code>  <code>|</code> <code class="grammar-char-escape">#x00B7</code> <code>|</code> <code>[</code> <code class="grammar-char-escape">#x0300</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x036F</code><code>]</code>  <code>|</code> <code>[</code> <code class="grammar-char-escape">#x203F</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x2040</code><code>]</code> )<code>*</code> 
+[4t]   prefixID                         ::= "<code class="grammar-literal">@prefix</code>"
+                                          <a href="#grammar-production-PNAME_NS">PNAME_NS</a>
+                                          <a href="#grammar-production-IRIREF">IRIREF</a>
+                                          "<code class="grammar-literal">.</code>"
+[18]   graph                            ::= <a href="#grammar-production-triples">triples</a>
+                                          ("<code class="grammar-literal">.</code>" <a href="#grammar-production-triples">triples</a><code>?</code> )<code>*</code> 
+[6t]   triples                          ::= <a href="#grammar-production-subject">subject</a> <a href="#grammar-production-predicateObjectList">predicateObjectList</a>
+                                          <code>|</code> <a href="#grammar-production-blankNodePropertyList">blankNodePropertyList</a> <a href="#grammar-production-predicateObjectList">predicateObjectList</a><code>?</code> 
+[7t]   predicateObjectList              ::= <a href="#grammar-production-verb">verb</a>
+                                          <a href="#grammar-production-objectList">objectList</a>
+                                          ("<code class="grammar-literal">;</code>" (<a href="#grammar-production-verb">verb</a> <a href="#grammar-production-objectList">objectList</a>)<code>?</code> )<code>*</code> 
+[8t]   objectList                       ::= <a href="#grammar-production-object">object</a>
+                                          ("<code class="grammar-literal">,</code>" <a href="#grammar-production-object">object</a>)<code>*</code> 
+[9t]   verb                             ::= <a href="#grammar-production-predicate">predicate</a>
+                                          <code>|</code> "<code class="grammar-literal">a</code>"
+[10t]  subject                          ::= <a href="#grammar-production-iri">iri</a>
+                                          <code>|</code> <a href="#grammar-production-BlankNode">BlankNode</a>
+                                          <code>|</code> <a href="#grammar-production-collection">collection</a>
+                                          <code>|</code> <a href="#grammar-production-VAR1">VAR1</a>
+[11t]  predicate                        ::= <a href="#grammar-production-iri">iri</a>
+[12t]  object                           ::= <a href="#grammar-production-iri">iri</a>
+                                          <code>|</code> <a href="#grammar-production-BlankNode">BlankNode</a>
+                                          <code>|</code> <a href="#grammar-production-collection">collection</a>
+                                          <code>|</code> <a href="#grammar-production-blankNodePropertyList">blankNodePropertyList</a>
+                                          <code>|</code> <a href="#grammar-production-literal">literal</a>
+                                          <code>|</code> <a href="#grammar-production-VAR1">VAR1</a>
+[13t]  literal                          ::= <a href="#grammar-production-RDFLiteral">RDFLiteral</a>
+                                          <code>|</code> <a href="#grammar-production-NumericLiteral">NumericLiteral</a>
+                                          <code>|</code> <a href="#grammar-production-BooleanLiteral">BooleanLiteral</a>
+[14t]  blankNodePropertyList            ::= "<code class="grammar-literal">[</code>"
+                                          <a href="#grammar-production-predicateObjectList">predicateObjectList</a>
+                                          "<code class="grammar-literal">]</code>"
+[15t]  collection                       ::= "<code class="grammar-literal">(</code>"
+                                          <a href="#grammar-production-object">object</a><code>*</code> 
+                                          "<code class="grammar-literal">)</code>"
+[16t]  NumericLiteral                   ::= <a href="#grammar-production-INTEGER">INTEGER</a>
+                                          <code>|</code> <a href="#grammar-production-DECIMAL">DECIMAL</a>
+                                          <code>|</code> <a href="#grammar-production-DOUBLE">DOUBLE</a>
+[128s] RDFLiteral                       ::= <a href="#grammar-production-String">String</a>
+                                          (<a href="#grammar-production-LANGTAG">LANGTAG</a> <code>|</code> "<code class="grammar-literal">^^</code>" <a href="#grammar-production-iri">iri</a>)<code>?</code> 
+[133s] BooleanLiteral                   ::= "<code class="grammar-literal">true</code>"
+                                          <code>|</code> "<code class="grammar-literal">false</code>"
+[17]   String                           ::= <a href="#grammar-production-STRING_LITERAL_QUOTE">STRING_LITERAL_QUOTE</a>
+                                          <code>|</code> <a href="#grammar-production-STRING_LITERAL_SINGLE_QUOTE">STRING_LITERAL_SINGLE_QUOTE</a>
+                                          <code>|</code> <a href="#grammar-production-STRING_LITERAL_LONG_SINGLE_QUOTE">STRING_LITERAL_LONG_SINGLE_QUOTE</a>
+                                          <code>|</code> <a href="#grammar-production-STRING_LITERAL_LONG_QUOTE">STRING_LITERAL_LONG_QUOTE</a>
+[135s] iri                              ::= <a href="#grammar-production-IRIREF">IRIREF</a>
+                                          <code>|</code> <a href="#grammar-production-PrefixedName">PrefixedName</a>
+[136s] PrefixedName                     ::= <a href="#grammar-production-PNAME_LN">PNAME_LN</a>
+                                          <code>|</code> <a href="#grammar-production-PNAME_NS">PNAME_NS</a>
+[137s] BlankNode                        ::= <a href="#grammar-production-BLANK_NODE_LABEL">BLANK_NODE_LABEL</a>
+                                          <code>|</code> <a href="#grammar-production-ANON">ANON</a>
+[18]   IRIREF                           ::= "<code class="grammar-literal"><</code>"
+                                          <code>[</code> <code class="grammar-literal">^</code><code class="grammar-char-escape">#x00</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal"><>"{}|^`]</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">|</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">UCHAR)*</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">'>'</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">/*</code><code class="grammar-char-escape">#x20</code><code class="grammar-char-escape">#x00</code><code class="grammar-literal">=NULL</code><code class="grammar-char-escape">#x20</code><code class="grammar-char-escape">#x23</code><code class="grammar-literal">01-</code><code class="grammar-char-escape">#x1F</code><code class="grammar-literal">=control</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">codes</code><code class="grammar-char-escape">#x20</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">=space</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">*/</code><code>]</code> 
+[139s] PNAME_NS                         ::= <a href="#grammar-production-PN_PREFIX">PN_PREFIX</a><code>?</code> 
+                                          "<code class="grammar-literal">:</code>"
+[140s] PNAME_LN                         ::= <a href="#grammar-production-PNAME_NS">PNAME_NS</a>
+                                          <a href="#grammar-production-PN_LOCAL">PN_LOCAL</a>
+[141s] BLANK_NODE_LABEL                 ::= "<code class="grammar-literal">_:</code>"
+                                          <code>(</code> <a href="#grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> <code>)</code> 
+                                          (<a href="#grammar-production-PN_CHARS">PN_CHARS</a> <code>|</code> "<code class="grammar-literal">.</code>")<code>*</code>  <a href="#grammar-production-PN_CHARS">PN_CHARS</a><code>?</code> 
+[144s] LANGTAG                          ::= "<code class="grammar-literal">@</code>"
+                                          (<code>[</code> <code class="grammar-literal">a-zA-Z</code><code>]</code> )<code>+</code> 
+                                          ("<code class="grammar-literal">-</code>" (<code>[</code> <code class="grammar-literal">a-zA-Z0-9</code><code>]</code> )<code>+</code> )<code>*</code> 
+[19]   INTEGER                          ::= (<code>[</code> <code class="grammar-literal">+-</code><code>]</code> )<code>?</code> 
+                                          (<code>[</code> <code class="grammar-literal">0-9</code><code>]</code> )<code>+</code> 
+[20]   DECIMAL                          ::= (<code>[</code> <code class="grammar-literal">+-</code><code>]</code> )<code>?</code> 
+                                          (<code>[</code> <code class="grammar-literal">0-9</code><code>]</code> )<code>*</code> 
+                                          "<code class="grammar-literal">.</code>"
+                                          (<code>[</code> <code class="grammar-literal">0-9</code><code>]</code> )<code>+</code> 
+[21]   DOUBLE                           ::= (<code>[</code> <code class="grammar-literal">+-</code><code>]</code> )<code>?</code> 
+                                          <code>(</code> (<code>[</code> <code class="grammar-literal">0-9</code><code>]</code> )<code>+</code>  "<code class="grammar-literal">.</code>" (<code>[</code> <code class="grammar-literal">0-9</code><code>]</code> )<code>*</code>  <a href="#grammar-production-EXPONENT">EXPONENT</a> <code>|</code> "<code class="grammar-literal">.</code>" (<code>[</code> <code class="grammar-literal">0-9</code><code>]</code> )<code>+</code>  <a href="#grammar-production-EXPONENT">EXPONENT</a> <code>|</code> (<code>[</code> <code class="grammar-literal">0-9</code><code>]</code> )<code>+</code>  <a href="#grammar-production-EXPONENT">EXPONENT</a><code>)</code> 
+[154s] EXPONENT                         ::= <code>[</code> <code class="grammar-literal">eE</code><code>]</code> 
+                                          (<code>[</code> <code class="grammar-literal">+-</code><code>]</code> )<code>?</code> 
+                                          (<code>[</code> <code class="grammar-literal">0-9</code><code>]</code> )<code>+</code> 
+[22]   STRING_LITERAL_QUOTE             ::= '<code class="grammar-literal">"</code>'
+                                          (<code>[</code> <code class="grammar-literal">^</code><code class="grammar-char-escape">#x22</code><code class="grammar-char-escape">#x5C</code><code class="grammar-char-escape">#xA</code><code class="grammar-char-escape">#xD</code><code>]</code>  <code>|</code> <a href="#grammar-production-ECHAR">ECHAR</a> <code>|</code> <a href="#grammar-production-UCHAR">UCHAR</a>)<code>*</code> 
+                                          '<code class="grammar-literal">"</code>'
+[23]   STRING_LITERAL_SINGLE_QUOTE      ::= "<code class="grammar-literal">'</code>"
+                                          (<code>[</code> <code class="grammar-literal">^</code><code class="grammar-char-escape">#x27</code><code class="grammar-char-escape">#x5C</code><code class="grammar-char-escape">#xA</code><code class="grammar-char-escape">#xD</code><code>]</code>  <code>|</code> <a href="#grammar-production-ECHAR">ECHAR</a> <code>|</code> <a href="#grammar-production-UCHAR">UCHAR</a>)<code>*</code> 
+                                          "<code class="grammar-literal">'</code>"
+[24]   STRING_LITERAL_LONG_SINGLE_QUOTE ::= "<code class="grammar-literal">'''</code>"
+                                          <code>(</code> ("<code class="grammar-literal">'</code>" <code>|</code> "<code class="grammar-literal">''</code>")<code>?</code>  <code>[</code> <code class="grammar-literal">^']</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">|</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">ECHAR</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">|</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">UCHAR</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">)</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">)*</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">"'''"</code><code>]</code> <code>)</code> 
+[25]   STRING_LITERAL_LONG_QUOTE        ::= '<code class="grammar-literal">"""</code>'
+                                          <code>(</code> ('<code class="grammar-literal">"</code>' <code>|</code> '<code class="grammar-literal">""</code>')<code>?</code>  <code>[</code> <code class="grammar-literal">^"]</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">|</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">ECHAR</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">|</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">UCHAR</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">)</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">)*</code><code class="grammar-char-escape">#x20</code><code class="grammar-literal">'"""'</code><code>]</code> <code>)</code> 
+[26]   UCHAR                            ::= "<code class="grammar-literal">\u</code>" <a href="#grammar-production-HEX">HEX</a> <a href="#grammar-production-HEX">HEX</a> <a href="#grammar-production-HEX">HEX</a> <a href="#grammar-production-HEX">HEX</a>
+                                          <code>|</code> "<code class="grammar-literal">\U</code>" <a href="#grammar-production-HEX">HEX</a> <a href="#grammar-production-HEX">HEX</a> <a href="#grammar-production-HEX">HEX</a> <a href="#grammar-production-HEX">HEX</a> <a href="#grammar-production-HEX">HEX</a> <a href="#grammar-production-HEX">HEX</a> <a href="#grammar-production-HEX">HEX</a> <a href="#grammar-production-HEX">HEX</a>
+[159s] ECHAR                            ::= "<code class="grammar-literal">\</code>"
+                                          <code>[</code> <code class="grammar-literal">tbnrf"']</code><code>]</code> 
+[161s] WS                               ::= <code class="grammar-char-escape">#x20</code>
+                                          <code>|</code> <code class="grammar-char-escape">#x9</code>
+                                          <code>|</code> <code class="grammar-char-escape">#xD</code>
+                                          <code>|</code> <code class="grammar-char-escape">#xA</code>
+[162s] ANON                             ::= "<code class="grammar-literal">[</code>"
+                                          <a href="#grammar-production-WS">WS</a><code>*</code> 
+                                          "<code class="grammar-literal">]</code>"
+[163s] PN_CHARS_BASE                    ::= <code>[</code> <code class="grammar-literal">A-Z</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-literal">a-z</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#x00C0</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x00D6</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#x00D8</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x00F6</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#x00F8</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x02FF</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#x0370</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x037D</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#x037F</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x1FFF</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#x200C</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x200D</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#x2070</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x218F</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#x2C00</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x2FEF</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#x3001</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#xD7FF</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#xF900</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#xFDCF</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#xFDF0</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#xFFFD</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#x10000</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#xEFFFF</code><code>]</code> 
+[164s] PN_CHARS_U                       ::= <a href="#grammar-production-PN_CHARS_BASE">PN_CHARS_BASE</a>
+                                          <code>|</code> "<code class="grammar-literal">_</code>"
+[166s] PN_CHARS                         ::= <a href="#grammar-production-PN_CHARS_U">PN_CHARS_U</a>
+                                          <code>|</code> "<code class="grammar-literal">-</code>"
+                                          <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> 
+                                          <code>|</code> <code class="grammar-char-escape">#x00B7</code>
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#x0300</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x036F</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-char-escape">#x203F</code><code class="grammar-literal">-</code><code class="grammar-char-escape">#x2040</code><code>]</code> 
+[167s] PN_PREFIX                        ::= <a href="#grammar-production-PN_CHARS_BASE">PN_CHARS_BASE</a>
+                                          (<a href="#grammar-production-PN_CHARS">PN_CHARS</a> <code>|</code> "<code class="grammar-literal">.</code>")<code>*</code>  <a href="#grammar-production-PN_CHARS">PN_CHARS</a><code>?</code> 
+[168s] PN_LOCAL                         ::= <code>(</code> <a href="#grammar-production-PN_CHARS_U">PN_CHARS_U</a> <code>|</code> "<code class="grammar-literal">:</code>" <code>|</code> <code>[</code> <code class="grammar-literal">0-9</code><code>]</code>  <code>|</code> <a href="#grammar-production-PLX">PLX</a><code>)</code> 
+                                          (<a href="#grammar-production-PN_CHARS">PN_CHARS</a> <code>|</code> "<code class="grammar-literal">.</code>" <code>|</code> "<code class="grammar-literal">:</code>" <code>|</code> <a href="#grammar-production-PLX">PLX</a>)<code>*</code>  <code>(</code> <a href="#grammar-production-PN_CHARS">PN_CHARS</a> <code>|</code> "<code class="grammar-literal">:</code>" <code>|</code> <a href="#grammar-production-PLX">PLX</a><code>)</code> <code>?</code> 
+[169s] PLX                              ::= <a href="#grammar-production-PERCENT">PERCENT</a>
+                                          <code>|</code> <a href="#grammar-production-PN_LOCAL_ESC">PN_LOCAL_ESC</a>
+[170s] PERCENT                          ::= "<code class="grammar-literal">%</code>"
+                                          <a href="#grammar-production-HEX">HEX</a>
+                                          <a href="#grammar-production-HEX">HEX</a>
+[171s] HEX                              ::= <code>[</code> <code class="grammar-literal">0-9</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-literal">A-F</code><code>]</code> 
+                                          <code>|</code> <code>[</code> <code class="grammar-literal">a-f</code><code>]</code> 
+[172s] PN_LOCAL_ESC                     ::= "<code class="grammar-literal">\</code>"
+                                          <code>(</code> "<code class="grammar-literal">_</code>" <code>|</code> "<code class="grammar-literal">~</code>" <code>|</code> "<code class="grammar-literal">.</code>" <code>|</code> "<code class="grammar-literal">-</code>" <code>|</code> <code class="grammar-char-escape">#x21</code> <code>|</code> "<code class="grammar-literal">$</code>" <code>|</code> "<code class="grammar-literal">&</code>" <code>|</code> "<code class="grammar-literal">'</code>" <code>|</code> "<code class="grammar-literal">(</code>" <code>|</code> "<code class="grammar-literal">)</code>" <code>|</code> "<code class="grammar-literal">*</code>" <code>|</code> "<code class="grammar-literal">+</code>" <code>|</code> "<code class="grammar-literal">,</code>" <code>|</code> "<code class="grammar-literal">;</code>" <code>|</code> "<code class="grammar-literal">=</code>" <code>|</code> "<code class="grammar-literal">/</code>" <code>|</code> "<code class="grammar-literal">?</code>" <code>|</code> "<code class="grammar-literal">#</code>" <code>|</code> "<code class="grammar-literal">@</code>" <code>|</code> "<code class="grammar-literal">%</code>"<code>)</code> </div></div>
+
+      <div id="footer">
+  Generated on Fri Jan 28 19:19:42 2022 by
+  <a href="http://yardoc.org" title="Yay! A Ruby Documentation Tool" target="_parent">yard</a>
+  0.9.27 (ruby-3.1.0).
+</div>
+
+    </div>
+  </body>
+</html>
