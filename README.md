@@ -118,6 +118,6 @@ A copy of the [LD Patch EBNF](file:etc/ld-patch.ebnf) and derived parser files a
 [SPARQL]:         https://rubygems.org/gems/sparql
 [Linked Data]:    https://rubygems.org/gems/linkeddata
 [SSE]:            http://openjena.org/wiki/SSE
-[SXP]:            https://rubygems.org/gems/sxp-ruby
+[SXP]:            https://dryruby.github.io/sxp
 [LD Patch]:       http://www.w3.org/TR/ldpatch/
-[LD-Patch doc]:   http://rubydoc.info/github/ruby-rdf/ld-patch
+[LD-Patch doc]:   https://ruby-rdf.github.io/ld-patch

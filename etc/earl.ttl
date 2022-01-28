@@ -10,7 +10,7 @@
 
 <https://rubygems.org/gems/ld-patch> a doap:Project, earl:TestSubject, earl:Software ;
   doap:name          "LD::Patch" ;
-  doap:homepage      <http://ruby-rdf.github.com/ld-patch> ;
+  doap:homepage      <https://ruby-rdf.github.io/ld-patch> ;
   doap:license       <https://unlicense.org/1.0/> ;
   doap:shortdesc     "W3C Linked Data Patch Format for RDF.rb."@en ;
   doap:description   """
