@@ -11,7 +11,9 @@ module LD::Patch
   #
   # @see http://www.w3.org/TR/ldpatch/
   class Format < RDF::Format
-    content_type     'text/ldpatch', extension: :ldp
+    content_type     'text/ldpatch',
+                     extension: :ldp,
+                     uri: 'http://www.w3.org/ns/formats/LD_Patch'
     content_encoding 'utf-8'
 
     ##
