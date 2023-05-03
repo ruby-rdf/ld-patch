@@ -2,7 +2,7 @@
 
 This is a [Ruby][] implementation of [LD Patch][] for [RDF.rb][].
 
-[![Gem Version](https://badge.fury.io/rb/ld-patch.png)](https://badge.fury.io/rb/ld-patch)
+[![Gem Version](https://badge.fury.io/rb/ld-patch.svg)](https://badge.fury.io/rb/ld-patch)
 [![Build Status](https://github.com/ruby-rdf/ld-patch/workflows/CI/badge.svg?branch=develop)](https://github.com/ruby-rdf/ld-patch/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/ruby-rdf/ld-patch/badge.svg?branch=develop)](https://coveralls.io/github/ruby-rdf/ld-patch?branch=develop)
 [![Gitter chat](https://badges.gitter.im/ruby-rdf/rdf.png)](https://gitter.im/ruby-rdf/rdf)
