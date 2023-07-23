@@ -26,6 +26,10 @@ describe LD::Patch::Format do
     specify {expect(described_class.to_sym).to eq :ldpatch}
   end
 
+  describe "#to_uri" do
+    specify {expect(described_class.to_uri).to eq RDF::URI('http://www.w3.org/ns/formats/LD_Patch')}
+  end
+
   describe ".cli_commands" do
     require 'rdf/cli'
     let(:nt) {File.expand_path("../test-files/1triple.nt", __FILE__)}

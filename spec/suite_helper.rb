@@ -2,6 +2,7 @@
 # Used for Turtle tests
 require 'rdf/turtle'
 require 'json/ld'
+require 'rdf/normalize'
 
 # For now, override RDF::Utils::File.open_file to look for the file locally before attempting to retrieve it
 module RDF::Util
@@ -132,6 +133,7 @@ module Fixtures
 
     class Entry < JSON::LD::Resource
       attr_accessor :debug
+      def format; :normalize; end # for debug output
 
       def base
         action.is_a?(Hash) ? action.fetch("base", action["data"]) : action
@@ -151,7 +153,9 @@ module Fixtures
       end
 
       def target_graph
-        @graph ||= RDF::Graph.load(CGI.unescape(data), base_uri: base)
+        @graph ||= RDF::Graph.new do |g|
+          g << RDF::Reader.open(CGI.unescape(data), base_uri: base)
+        end
       end
 
       def expected
@@ -159,7 +163,9 @@ module Fixtures
       end
 
       def expected_graph
-        @expected_graph ||= RDF::Graph.load(CGI.unescape(result), base_uri: base)
+        @expected_graph ||= RDF::Graph.new do |g|
+          g << RDF::Reader.open(CGI.unescape(result), base_uri: base)
+        end
       end
 
       def evaluate?

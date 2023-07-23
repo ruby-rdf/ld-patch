@@ -2,7 +2,7 @@
 
 This is a [Ruby][] implementation of [LD Patch][] for [RDF.rb][].
 
-[![Gem Version](https://badge.fury.io/rb/ld-patch.png)](https://badge.fury.io/rb/ld-patch)
+[![Gem Version](https://badge.fury.io/rb/ld-patch.svg)](https://badge.fury.io/rb/ld-patch)
 [![Build Status](https://github.com/ruby-rdf/ld-patch/workflows/CI/badge.svg?branch=develop)](https://github.com/ruby-rdf/ld-patch/actions?query=workflow%3ACI)
 [![Coverage Status](https://coveralls.io/repos/ruby-rdf/ld-patch/badge.svg?branch=develop)](https://coveralls.io/github/ruby-rdf/ld-patch?branch=develop)
 [![Gitter chat](https://badges.gitter.im/ruby-rdf/rdf.png)](https://gitter.im/ruby-rdf/rdf)
@@ -118,6 +118,6 @@ A copy of the [LD Patch EBNF](file:etc/ld-patch.ebnf) and derived parser files a
 [SPARQL]:         https://rubygems.org/gems/sparql
 [Linked Data]:    https://rubygems.org/gems/linkeddata
 [SSE]:            http://openjena.org/wiki/SSE
-[SXP]:            https://rubygems.org/gems/sxp-ruby
+[SXP]:            https://dryruby.github.io/sxp
 [LD Patch]:       http://www.w3.org/TR/ldpatch/
-[LD-Patch doc]:   http://rubydoc.info/github/ruby-rdf/ld-patch
+[LD-Patch doc]:   https://ruby-rdf.github.io/ld-patch
