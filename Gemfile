@@ -13,6 +13,7 @@ group :development, :test do
   gem 'json-ld',            github: "ruby-rdf/json-ld",             branch: "develop"
   gem 'rdf-aggregate-repo', github: "ruby-rdf/rdf-aggregate-repo",  branch: "develop"
   gem 'rdf-isomorphic',     github: "ruby-rdf/rdf-isomorphic",      branch: "develop"
+  gem 'rdf-normalize',      github: "ruby-rdf/rdf-normalize",       branch: "develop"
   gem 'rdf-spec',           github: "ruby-rdf/rdf-spec",            branch: "develop"
   gem "rdf-vocab",          github: "ruby-rdf/rdf-vocab",           branch: "develop"
   gem 'rdf-turtle',         github: "ruby-rdf/rdf-turtle",          branch: "develop"
@@ -22,6 +23,6 @@ group :development, :test do
   gem 'sxp',                github: "dryruby/sxp.rb",               branch: "develop"
   gem 'rest-client-components'
   gem 'erubis'
-  gem 'simplecov', '~> 0.21',  platforms: :mri
+  gem 'simplecov', '~> 0.22',  platforms: :mri
   gem 'simplecov-lcov', '~> 0.8',  platforms: :mri
 end

@@ -27,22 +27,22 @@ Gem::Specification.new do |gem|
     Implements the W3C Linked Data Patch Format and operations for RDF.rb.
     Makes use of the SPARQL gem for performing updates.)
 
-  gem.required_ruby_version      = '>= 2.6'
+  gem.required_ruby_version      = '>= 3.0'
   gem.requirements               = []
-  gem.add_runtime_dependency     'rdf',               '~> 3.2'
-  gem.add_runtime_dependency     'ebnf',              '~> 2.3'
-  gem.add_runtime_dependency     'sparql',            '~> 3.2'
-  gem.add_runtime_dependency     'sxp',               '~> 1.2'
-  gem.add_runtime_dependency     'rdf-xsd',           '~> 3.2'
+  gem.add_runtime_dependency     'rdf',               '~> 3.3'
+  gem.add_runtime_dependency     'ebnf',              '~> 2.4'
+  gem.add_runtime_dependency     'sparql',            '~> 3.3'
+  gem.add_runtime_dependency     'sxp',               '~> 1.3'
+  gem.add_runtime_dependency     'rdf-xsd',           '~> 3.3'
 
-  gem.add_development_dependency 'json-ld',           '~> 3.2'
-  gem.add_development_dependency 'rack',              '~> 3.0'
-  gem.add_development_dependency 'rdf-normalize',     '~> 0.6'
-  gem.add_development_dependency 'rdf-spec',          '~> 3.2'
+  gem.add_development_dependency 'json-ld',           '~> 3.3'
+  gem.add_development_dependency 'rack',               '>= 2.2', '< 4'
+  gem.add_development_dependency 'rdf-normalize',     '~> 0.7'
+  gem.add_development_dependency 'rdf-spec',          '~> 3.3'
   gem.add_development_dependency 'rspec',             '~> 3.12'
   gem.add_development_dependency 'rspec-its',         '~> 1.3'
   gem.add_development_dependency 'yard' ,             '~> 0.9'
-  gem.add_development_dependency 'webmock',           '~> 3.18'
+  gem.add_development_dependency 'webmock',           '~> 3.19'
 
   gem.post_install_message       = nil
 end
