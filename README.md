@@ -81,6 +81,10 @@ The parser takes branch and follow tables generated from the [LD Patch Grammar](
 * [SXP][] (~> 1.2)
 * [RDF::XSD][] (~> 3.2)
 
+## Change Log
+
+See [Release Notes on GitHub](https://github.com/ruby-rdf/ld-patch/releases)
+
 ## Mailing List
 * <http://lists.w3.org/Archives/Public/public-rdf-ruby/>
 
