@@ -110,7 +110,6 @@ module Fixtures
     class Manifest < JSON::LD::Resource
       def self.open(file)
         #puts "open: #{file}"
-        prefixes = {}
         g = RDF::Repository.load(file, format:  :ttl)
         JSON::LD::API.fromRDF(g) do |expanded|
           JSON::LD::API.frame(expanded, FRAME) do |framed|
@@ -149,35 +148,35 @@ module Fixtures
       end
 
       def data
-        action.is_a?(Hash) && action["data"]
+        @data ||= RDF::Util::File.open_file(CGI.unescape(action["data"])) {|f| f.read} if action["data"]
       end
 
       def target_graph
         @graph ||= RDF::Graph.new do |g|
-          g << RDF::Reader.open(CGI.unescape(data), base_uri: base)
+          g << RDF::Reader.open(CGI.unescape(action["data"]), base_uri: base) if action["data"]
         end
       end
 
       def expected
-        @expected ||= RDF::Util::File.open_file(CGI.unescape(result)) {|f| f.read}
+        @expected ||= RDF::Util::File.open_file(CGI.unescape(result)) {|f| f.read} if result
       end
 
       def expected_graph
         @expected_graph ||= RDF::Graph.new do |g|
-          g << RDF::Reader.open(CGI.unescape(result), base_uri: base)
+          g << RDF::Reader.open(CGI.unescape(result), base_uri: base) if result
         end
       end
 
       def evaluate?
-        Array(attributes['@type']).join(" ").match(/Eval/)
+        Array(attributes['@type']).join(" ").match?(/Eval/)
       end
 
       def syntax?
-        Array(attributes['@type']).join(" ").match(/Syntax/)
+        Array(attributes['@type']).join(" ").match?(/Syntax/)
       end
 
       def positive_test?
-        !Array(attributes['@type']).join(" ").match(/Negative/)
+        !Array(attributes['@type']).join(" ").match?(/Negative/)
       end
 
       def negative_test?
@@ -194,12 +193,21 @@ module Fixtures
       end
 
       def inspect
-        super.sub('>', "\n" +
+        "<Entry id\n" +
+        "  id: #{self.id}\n" +
+        "  type: #{self.type}\n" +
+        "  name: #{self.name}\n" +
+        (self.action.is_a?(Hash) ?
+          "  action.base: #{self.action['base']}\n" +
+          "  action.data: #{self.action['data']}\n" +
+          "  action.patch: #{self.action['patch']}\n"
+        : "  action: #{self.action}"
+        ) +
+        "  result: #{self.result}\n" +
         "  syntax?: #{syntax?.inspect}\n" +
         "  positive?: #{positive_test?.inspect}\n" +
         "  evaluate?: #{evaluate?.inspect}\n" +
         ">"
-      )
       end
     end
   end

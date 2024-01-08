@@ -76,7 +76,7 @@ The parser takes branch and follow tables generated from the [LD Patch Grammar](
 
 * [Ruby](http://ruby-lang.org/) (>= 3.0)
 * [RDF.rb](https://rubygems.org/gems/rdf) (~> 3.3)
-* [EBNF][] (~> 2.4)
+* [EBNF][] (~> 2.5)
 * [SPARQL][] (~> 3.2)
 * [SXP][] (~> 2.0)
 * [RDF::XSD][] (~> 3.2)
