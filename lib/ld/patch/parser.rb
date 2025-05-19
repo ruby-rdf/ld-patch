@@ -539,7 +539,14 @@ module LD::Patch
     def ns(prefix, suffix)
       error("pname", "undefined prefix #{prefix.inspect}") unless prefix(prefix)
       base = prefix(prefix).to_s
+
+      # Unescape PN_LOCAL_ESC
+      suffix = suffix.gsub(PN_LOCAL_ESC) {|esc| esc[1]} if
+        suffix.to_s.match?(PN_LOCAL_ESC)
+
+      # Remove any redundant leading hash from suffix
       suffix = suffix.to_s.sub(/^\#/, "") if base.index("#")
+
       debug {"ns(#{prefix.inspect}): base: '#{base}', suffix: '#{suffix}'"}
       iri = iri(base + suffix.to_s)
       # Cause URI to be serialized as a lexical

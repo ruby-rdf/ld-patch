@@ -27,26 +27,34 @@ def earl_preamble(options)
 )
 end
 
-def run_tc(t, options)
-  STDERR.write "run #{t.name}"
+def run_tc(tc, options)
+  STDERR.write "run #{tc.name}"
+
+  if options[:verbose]
+    puts "\nTestCase: #{tc.inspect}"
+    puts "\nInput:\n" + tc.input
+    puts "\nData:\n" + tc.data if tc.data
+    puts "\nExpected:\n" + tc.expected if tc.expected
+  end
+
   result = "untested"
 
   begin
-    operator = LD::Patch.parse(t.input,
-      base_uri: t.base,
+    operator = LD::Patch.parse(tc.input,
+      base_uri: tc.base,
       validate: true,
       errors: []
     )
-    if t.positive_test?
-      if t.evaluate?
-        ug = operator.execute(t.target_graph)
-        result = t.target_graph.isomorphic_with?(t.expected_graph) ? "passed" : "failed"
+    if tc.positive_test?
+      if tc.evaluate?
+        ug = operator.execute(tc.target_graph)
+        result = tc.target_graph.isomorphic_with?(tc.expected_graph) ? "passed" : "failed"
       else
         result = operator.is_a?(SPARQL::Algebra::Operator) ? "passed" : "failed"
       end
     else
-      operator.execute(t.target_graph) if t.evaluate?
-      if %w(turtle-syntax-bad-struct-09 turtle-syntax-bad-struct-10).include?(t.name)
+      operator.execute(tc.target_graph) if tc.evaluate?
+      if %w(turtle-syntax-bad-struct-09 turtle-syntax-bad-struct-10).include?(tc.name)
         STDERR.puts "Multiple '.' allowed in this grammar" unless options[:quiet]
         result = "inapplicable"
       else
@@ -54,23 +62,25 @@ def run_tc(t, options)
       end
     end
   rescue LD::Patch::ParseError => e
-    if %w(turtle-eval-bad-01 turtle-eval-bad-02 turtle-eval-bad-03).include?(t.name)
+    if %w(turtle-eval-bad-01 turtle-eval-bad-02 turtle-eval-bad-03).include?(tc.name)
       result = "passed"
-    elsif t.syntax? && t.negative_test?
+    elsif tc.syntax? && tc.negative_test?
       result = "passed"
     else
+      STDERR.puts "#{"exception:" unless options[:quiet]}: #{e}"
       result = "failed"
     end
   rescue LD::Patch::Error => e
-    if t.evaluate? && t.negative_test?
-      result = e.code == t.statusCode.to_i ? "passed" : "failed"
+    if tc.evaluate? && tc.negative_test?
+      result = e.code == tc.statusCode.to_i ? "passed" : "failed"
     else
       result = "failed"
     end
+    STDERR.puts "#{"exception:" unless options[:quiet]}: #{e}" if result == "failed"
   end
 
   if options[:earl]
-    test = t.id.sub("ldp:", Fixtures::SuiteTest::BASE + "manifest.ttl#")
+    test = tc.id.sub("ldp:", Fixtures::SuiteTest::BASE + "manifest.ttl#")
     options[:output].puts %{
 [ a earl:Assertion;
   earl:assertedBy <#{ASSERTOR}>;
@@ -95,7 +105,7 @@ options = {
   validate:     true,
   verbose:      false,
 }
-suite = "rdfxml"
+
 opts = GetoptLong.new(
   ["--debug", GetoptLong::NO_ARGUMENT],
   ["--earl", GetoptLong::NO_ARGUMENT],
@@ -135,7 +145,7 @@ result_count = {}
 
   Fixtures::SuiteTest::Manifest.open(manifest) do |m|
     m.entries.each do |tc|
-      next unless ARGV.empty? || ARGV.any? {|n| tc.name.match(/#{n}/)}
+      next unless ARGV.empty? || ARGV.any? {|n| tc.name.match?(/#{n}/)}
       run_tc(tc, options.merge(result_count: result_count))
     end
   end
